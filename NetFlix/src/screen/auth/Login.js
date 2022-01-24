@@ -1,0 +1,91 @@
+import { View, Text, SafeAreaView, StyleSheet, ImageBackground } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { BackgroundImage } from 'react-native-elements/dist/config';
+import { Input } from 'react-native-elements/dist/input/Input';
+import { Button } from 'react-native-elements/dist/buttons/Button';
+
+const Login = () => {
+    const [username, setUsername] = useState(null)
+    const [password, setPassword] = useState(null)
+    const [disableBtn, setDisableBtn] = useState(true);
+    const userNameRef = useRef(null);
+
+
+    useEffect(() => {
+        userNameRef.current.focus()
+    }, [])
+
+    useEffect(() => {
+        if (username && password) {
+            setDisableBtn(false)
+        }else {
+            setDisableBtn(true)
+        }
+    }, [username, password])
+
+    return (
+        <View style={styles.container}>
+            <ImageBackground
+                source={{ uri: "https://user-images.githubusercontent.com/33485020/108069438-5ee79d80-7089-11eb-8264-08fdda7e0d11.jpg" }}
+                resizeMode='cover'
+                style={styles.backGround}>
+                <View style={styles.inputContainer}>
+                    <Input placeholder='User name'
+                        onChangeText={(e) => setUsername(e)}
+                        style={styles.input}
+                        ref={userNameRef}
+                        inputContainerStyle={{
+                            borderBottomWidth: 0,
+                            borderColor: 'transparent'
+                        }} 
+                        placeholderTextColor="#d9d9d9"/>
+
+                    <Input placeholder='Password'
+                        secureTextEntry
+                        style={styles.input}
+                        onChangeText={(e) => setPassword(e)}
+                        inputContainerStyle={{
+                            borderBottomWidth: 0,
+                            borderColor: 'transparent'
+                        }}
+                        placeholderTextColor="#d9d9d9"/>
+                    <Button title="Đăng nhập"
+                        containerStyle={[styles.buttonContainer, disableBtn && {backgroundColor:'transparent'}]}
+                        titleStyle={{ fontWeight: 'bold' }}
+                        disabled={disableBtn}
+                        disabledTitleStyle = {{color:'white'}}
+                        />
+                </View>
+            </ImageBackground>
+        </View>
+    );
+};
+
+export default Login;
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+
+    },
+    backGround: {
+        flex: 1,
+        justifyContent: 'center',
+    },
+    inputContainer: {
+        alignItems: 'center',
+    },
+    input: {
+        backgroundColor: '#ababab',
+        padding: 12,
+        marginHorizontal: 16,
+        borderRadius: 8,
+        color: 'white',
+    },
+    buttonContainer: {
+        marginHorizontal: 16,
+        padding: 10,
+        width: '87%',
+        backgroundColor: 'red'
+    }
+})
