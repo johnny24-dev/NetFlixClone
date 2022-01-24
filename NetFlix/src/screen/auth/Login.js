@@ -3,8 +3,9 @@ import React, { useEffect, useState, useRef } from 'react';
 import { BackgroundImage } from 'react-native-elements/dist/config';
 import { Input } from 'react-native-elements/dist/input/Input';
 import { Button } from 'react-native-elements/dist/buttons/Button';
+import { navigate } from '../../navbar/rootNavigation';
 
-const Login = () => {
+const Login = ({navigation, route}) => {
     const [username, setUsername] = useState(null)
     const [password, setPassword] = useState(null)
     const [disableBtn, setDisableBtn] = useState(true);
@@ -54,7 +55,7 @@ const Login = () => {
                         titleStyle={{ fontWeight: 'bold' }}
                         disabled={disableBtn}
                         disabledTitleStyle = {{color:'white'}}
-                        />
+                        onPress={() => navigate('Tabs')}/>
                 </View>
             </ImageBackground>
         </View>
