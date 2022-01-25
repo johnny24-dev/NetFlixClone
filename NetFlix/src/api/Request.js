@@ -18,13 +18,18 @@ export const buildGetParams = (params, haveQuestionMark = false) => {
 }
 
 export const createToken = (params) => {
-    console.log('request:>>',`${Urls.URL_REQUEST_TOKEN}${buildGetParams(params)}`)
     return processResponse(NAxios.get(`${Urls.URL_REQUEST_TOKEN}${buildGetParams(params)}`))
 }
 
 export const validateAccount = (params) => {
-console.log("🚀 ~ file: Request.js ~ line 26 ~ validateAccount ~ params", params)
     return processResponse(NAxios.post(`${Urls.URL_VALIDATE_LOGIN}${buildGetParams(params.apiKey)}`,params.body))
 }
 
+export const createSessionId = (params) => {
+    return processResponse(NAxios.post(`${Urls.URL_CREATE_SESSION_ID}${buildGetParams(params.apiKey)}`,params.body))
+}
+
+export const deleteSessionId = (params) => {
+    return processResponse(NAxios.delete(`${Urls.URL_DELETE_SESSION_ID}${buildGetParams(params.apiKey)}`,{data:params.body}))
+}
 

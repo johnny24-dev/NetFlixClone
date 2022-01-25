@@ -1,6 +1,5 @@
-import { View, Text, SafeAreaView, StyleSheet, ImageBackground } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, ImageBackground, TouchableOpacity, Linking } from 'react-native';
 import React, { useEffect, useState, useRef } from 'react';
-import { BackgroundImage } from 'react-native-elements/dist/config';
 import { Input } from 'react-native-elements/dist/input/Input';
 import { Button } from 'react-native-elements/dist/buttons/Button';
 import { navigate } from '../../navbar/rootNavigation';
@@ -9,6 +8,8 @@ import { ACTIONS } from '../../redux/action/authenAction';
 import * as BASE from '../../api/base'
 import { useSelector } from 'react-redux';
 
+const urlSignUp = "https://www.themoviedb.org/signup?language=vi"
+
 const Login = ({ navigation, route }) => {
     const [username, setUsername] = useState(null)
     const [password, setPassword] = useState(null)
@@ -16,10 +17,10 @@ const Login = ({ navigation, route }) => {
     const userNameRef = useRef(null);
     const dispatch = useDispatch()
     const requestToken = useSelector(state => state.authenReducer.token)
-    
+
     useEffect(() => {
         userNameRef.current.focus()
-        
+
     }, [])
 
     useEffect(() => {
@@ -77,6 +78,7 @@ const Login = ({ navigation, route }) => {
                             ))
                         }}
                     />
+                    <Text style={styles.signUp}>Chưa có tài khoản, vui lòng đăng ký {<Text style={styles.underline} onPress={() => Linking.openURL(urlSignUp)}>tại đây!</Text>}</Text>
                 </View>
             </ImageBackground>
         </View>
@@ -115,5 +117,13 @@ const styles = StyleSheet.create({
         marginHorizontal: 16,
         paddingHorizontal: 10,
         color: '#d9d9d9'
+    },
+    signUp: {
+        color: 'white',
+    },
+    underline: {
+        textDecorationLine: 'underline',
+        color: 'red',
+        fontWeight: 'bold'
     }
 })

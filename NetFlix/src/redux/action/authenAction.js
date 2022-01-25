@@ -26,6 +26,6 @@ export const ACTIONS = {
     loginError: (message) => ({ type: TYPES.LOGIN_ERROR, payload: message }),
     loggedIn: (token) => ({ type: TYPES.LOGGED_IN, payload: { token } }),
 
-    logoutRequest: (noRestart) => ({ type: TYPES.LOGOUT_REQUEST, payload: noRestart }),
+    logoutRequest: (params) => ({ type: TYPES.LOGOUT_REQUEST, payload: params }),
 
 }
