@@ -7,3 +7,9 @@ export const navigate = (name, params) => {
     navigationRef.navigate(name, params);
   }
 }
+
+export const goback = () => {
+  if (navigationRef.isReady()) {
+    navigationRef.goBack();
+  }
+}

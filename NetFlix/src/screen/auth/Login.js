@@ -4,22 +4,28 @@ import { BackgroundImage } from 'react-native-elements/dist/config';
 import { Input } from 'react-native-elements/dist/input/Input';
 import { Button } from 'react-native-elements/dist/buttons/Button';
 import { navigate } from '../../navbar/rootNavigation';
+import { useDispatch } from 'react-redux';
+import { ACTIONS } from '../../redux/action/authenAction';
+import * as BASE from '../../api/base'
+import { useSelector } from 'react-redux';
 
-const Login = ({navigation, route}) => {
+const Login = ({ navigation, route }) => {
     const [username, setUsername] = useState(null)
     const [password, setPassword] = useState(null)
     const [disableBtn, setDisableBtn] = useState(true);
     const userNameRef = useRef(null);
-
-
+    const dispatch = useDispatch()
+    const requestToken = useSelector(state => state.authenReducer.token)
+    
     useEffect(() => {
         userNameRef.current.focus()
+        
     }, [])
 
     useEffect(() => {
         if (username && password) {
             setDisableBtn(false)
-        }else {
+        } else {
             setDisableBtn(true)
         }
     }, [username, password])
@@ -38,8 +44,9 @@ const Login = ({navigation, route}) => {
                         inputContainerStyle={{
                             borderBottomWidth: 0,
                             borderColor: 'transparent'
-                        }} 
-                        placeholderTextColor="#d9d9d9"/>
+                        }}
+                        placeholderTextColor="#d9d9d9"
+                    />
 
                     <Input placeholder='Password'
                         secureTextEntry
@@ -49,13 +56,27 @@ const Login = ({navigation, route}) => {
                             borderBottomWidth: 0,
                             borderColor: 'transparent'
                         }}
-                        placeholderTextColor="#d9d9d9"/>
+                        placeholderTextColor="#d9d9d9" />
                     <Button title="Đăng nhập"
-                        containerStyle={[styles.buttonContainer, disableBtn && {backgroundColor:'transparent'}]}
+                        containerStyle={[styles.buttonContainer, disableBtn && { backgroundColor: 'transparent' }]}
                         titleStyle={{ fontWeight: 'bold' }}
                         disabled={disableBtn}
-                        disabledTitleStyle = {{color:'white'}}
-                        onPress={() => navigate('Tabs')}/>
+                        disabledTitleStyle={{ color: 'white' }}
+                        onPress={() => {
+                            dispatch(ACTIONS.loginRequest(
+                                {
+                                    apiKey: {
+                                        api_key: BASE.API_KEY
+                                    },
+                                    body: {
+                                        username: username,
+                                        password: password,
+                                        request_token: requestToken
+                                    }
+                                }
+                            ))
+                        }}
+                    />
                 </View>
             </ImageBackground>
         </View>
@@ -77,7 +98,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     input: {
-        backgroundColor: '#ababab',
+        backgroundColor: '#6b6b6b',
         padding: 12,
         marginHorizontal: 16,
         borderRadius: 8,
@@ -88,5 +109,11 @@ const styles = StyleSheet.create({
         padding: 10,
         width: '87%',
         backgroundColor: 'red'
+    },
+    lb: {
+        fontSize: 15,
+        marginHorizontal: 16,
+        paddingHorizontal: 10,
+        color: '#d9d9d9'
     }
 })

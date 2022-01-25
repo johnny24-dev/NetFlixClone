@@ -9,6 +9,7 @@ import NewAndHotScreen from "../screen/NewAndHotScreen";
 import SearchScreen from "../screen/SearchScreen";
 import Login from '../screen/auth/Login'
 import { navigationRef } from "./rootNavigation";
+import SplashScreen from "../screen/SplashScreen";
 const Tab = createBottomTabNavigator();
 const AppStack = createNativeStackNavigator()
 
@@ -34,7 +35,6 @@ const TabNavigator = () => {
         tabBarStyle: {
           backgroundColor: 'black'
         },
-
       }
     )}
     >
@@ -61,6 +61,10 @@ const MainStack = () => {
   return (
     <NavigationContainer ref={navigationRef}>
       <AppStack.Navigator>
+      <AppStack.Screen name = "Splash" component = {SplashScreen}
+        options={({ route }) => ({
+          headerShown: false,
+        })} />
       <AppStack.Screen name = "Login" component = {Login}
         options={({ route }) => ({
           headerShown: false,

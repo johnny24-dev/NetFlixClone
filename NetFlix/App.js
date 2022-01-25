@@ -7,18 +7,18 @@
  */
 
 import React, {useEffect, useState} from 'react';
+import { Provider } from 'react-redux';
 import TabNavigator from './src/navbar';
-import SplashScreen from './src/screen/SplashScreen'
+import store from './src/redux/store/store';
+import {Alert} from './src/components/Alert'
 
 const App = () => {
-  const [showSplash, setShowSplash] = useState(true);
-
-  setTimeout(()=>{
-    setShowSplash(false)
-  },2000)
 
   return (
-    showSplash ? <SplashScreen/> : <TabNavigator/>
+    <Provider store={store}>
+      <TabNavigator/>
+      <Alert/>
+    </Provider>
   );
 };
 

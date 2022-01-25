@@ -1,7 +1,18 @@
 import { View, Text, Image, SafeAreaView, StyleSheet, ActivityIndicator } from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
+import * as BASE from '../api/base'
+import { useDispatch } from 'react-redux';
+import { ACTIONS } from '../redux/action/authenAction';
 
 const SplashScreen = () => {
+
+  const dispatch = useDispatch();
+
+  setTimeout(()=>{
+    dispatch(ACTIONS.tokenRequest({ api_key: BASE.API_KEY }))
+  },2000)
+
+
   return (
     <SafeAreaView style = {styles.container}>
         <Text style = {styles.txtLogo}>NETFLIX</Text>
