@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, StyleSheet, ImageBackground, TouchableOpacity, Linking } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, ImageBackground, TouchableOpacity, Linking, KeyboardAvoidingView } from 'react-native';
 import React, { useEffect, useState, useRef } from 'react';
 import { Input } from 'react-native-elements/dist/input/Input';
 import { Button } from 'react-native-elements/dist/buttons/Button';
@@ -32,7 +32,7 @@ const Login = ({ navigation, route }) => {
     }, [username, password])
 
     return (
-        <View style={styles.container}>
+        <KeyboardAvoidingView style={styles.container}>
             <ImageBackground
                 source={{ uri: "https://user-images.githubusercontent.com/33485020/108069438-5ee79d80-7089-11eb-8264-08fdda7e0d11.jpg" }}
                 resizeMode='cover'
@@ -81,7 +81,7 @@ const Login = ({ navigation, route }) => {
                     <Text style={styles.signUp}>Chưa có tài khoản, vui lòng đăng ký {<Text style={styles.underline} onPress={() => Linking.openURL(urlSignUp)}>tại đây!</Text>}</Text>
                 </View>
             </ImageBackground>
-        </View>
+        </KeyboardAvoidingView>
     );
 };
 
@@ -120,6 +120,7 @@ const styles = StyleSheet.create({
     },
     signUp: {
         color: 'white',
+        marginTop:16
     },
     underline: {
         textDecorationLine: 'underline',

@@ -14,6 +14,7 @@ export default [
 ]
 
 function* createRequestToken(action) {
+    console.log("🚀 ~ file: authenSaga.js ~ line 17 ~ function*createRequestToken ~ action", action)
     try {
 
         const sessionId = yield getData(KEY_ASYNStORAGE.SESSION_ID);
@@ -67,7 +68,9 @@ function* logout(action) {
         console.log("🚀 ~ file: authenSaga.js ~ line 67 ~ function*logout ~ data", data)
         if (data.success) {
             yield AsyncStorage.clear()
-            navigateReplace('Login',null)
+            const { error, data } = yield call(createToken, action.payload.apiKey);
+            yield put(ACTIONS.tokenSuccess(data))
+            navigateReplace('Login')
         }else {
             showAlert(TYPE.ERROR, 'ERROR', 'Có lỗi xảy ra!')
         }

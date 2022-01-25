@@ -9,8 +9,6 @@ const HomeScreen = ({ navigation, route }) => {
 
   const dispatch = useDispatch();
   const sessionId = useSelector(state => state.authenReducer.sessionId)
-  console.log("🚀 ~ file: HomeScreen.js ~ line 12 ~ HomeScreen ~ sessionId", sessionId)
-  console.log('type of sessionId', typeof sessionId)
 
   const logout = (sessionId) => {
     dispatch(ACTIONS.logoutRequest(
