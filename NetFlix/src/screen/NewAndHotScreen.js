@@ -1,10 +1,24 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
-
+import { StyleSheet, Button, View, Alert } from 'react-native';
+import React, { useState, useCallback, useRef } from 'react';
+import YoutubePlayer from "react-native-youtube-iframe";
 const NewAndHotScreen = () => {
+  const [playing, setPlaying] = useState(false);
+
+  const onStateChange = useCallback((state) => {
+    if (state === "ended") {
+      setPlaying(false);
+      Alert.alert("video has finished playing!");
+    }
+  }, []);
+
   return (
     <View>
-      <Text>New and Hot</Text>
+      <YoutubePlayer
+        height={300}
+        play={playing}
+        videoId={"iee2TATGMyI"}
+        onChangeState={onStateChange}
+      />
     </View>
   );
 };

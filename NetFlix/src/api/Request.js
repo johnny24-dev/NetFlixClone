@@ -17,6 +17,8 @@ export const buildGetParams = (params, haveQuestionMark = false) => {
     return `?${Object.entries(params).map(x => (`${x[0]}=${x[1]}`)).join('&')}`
 }
 
+// authen
+
 export const createToken = (params) => {
     return processResponse(NAxios.get(`${Urls.URL_REQUEST_TOKEN}${buildGetParams(params)}`))
 }
@@ -32,4 +34,33 @@ export const createSessionId = (params) => {
 export const deleteSessionId = (params) => {
     return processResponse(NAxios.delete(`${Urls.URL_DELETE_SESSION_ID}${buildGetParams(params.apiKey)}`,{data:params.body}))
 }
+
+// moives
+
+export const getListPopilarMovie = (params) => {
+    return processResponse(NAxios.get(`${Urls.URL_MOVIES_POPULAR}${buildGetParams(params)}`))
+}
+
+export const getListMovieUpComing = (params) => {
+    return processResponse(NAxios.get(`${Urls.URL_MOVIES_UPCOMMING}${buildGetParams(params)}`))
+}
+
+export const getLatestMovie = (params) => {
+    return processResponse(NAxios.get(`${Urls.URL_LATEST_MOVIE}${buildGetParams(params)}`))
+}
+
+export const getMovieDetail = (id,params) => {
+    return processResponse(NAxios.get(`${Urls.URL_MOVIE_DETAIL}/${id}${buildGetParams(params)}`))
+}
+
+export const getListMovieTrending = (params) => {
+    return processResponse(NAxios.get(`${Urls.URL_MOVIE_TRENDING}${buildGetParams(params)}`))
+}
+
+export const getMovieCategory = (params) => {
+    return processResponse(NAxios.get(`${Urls.URL_CATEGORY_MOVIE}${buildGetParams(params)}`))
+}
+
+
+
 
