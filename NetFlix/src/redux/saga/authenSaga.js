@@ -1,5 +1,5 @@
 import { takeLatest, call, put, select, } from "redux-saga/effects";
-import { createToken, validateAccount, createSessionId, deleteSessionId } from "../../api/Request";
+import { createToken, validateAccount, createSessionId, deleteSessionId, getMovieCategory } from "../../api/Request";
 import { navigate, navigateReplace } from "../../navbar/rootNavigation";
 import { ACTIONS, TYPES } from "../action/authenAction";
 import { showAlert, TYPE } from '../../components/Alert'
@@ -21,11 +21,11 @@ function* createRequestToken(action) {
         
         if (sessionId) {
             yield put(ACTIONS.sessionIdSuccess({ session_id: sessionId }))
-            navigate('Tabs')
+            navigateReplace('Tabs')
         } else {
             const { error, data } = yield call(createToken, action.payload);
             yield put(ACTIONS.tokenSuccess(data))
-            navigate('Login')
+            navigateReplace('Login')
         }
     } catch (error) {
         console.log("🚀 ~ file: authenSaga.js ~ line 15 ~ function*createRequestToken ~ error", error)
@@ -50,6 +50,7 @@ function* login(action) {
             if (data.success) {
                 storeData(KEY_ASYNStORAGE.SESSION_ID, data.session_id)
                 yield put(ACTIONS.sessionIdSuccess(data))
+                yield call(getMovieCategory,)
                 navigate('Tabs');
             } else {
                 showAlert(TYPE.ERROR, 'ERROR', 'Có lỗi xảy ra!')

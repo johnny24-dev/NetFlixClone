@@ -1,23 +1,43 @@
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator,Dimensions } from 'react-native';
 import React from 'react';
 import { Image, } from 'react-native-elements/dist/image/Image';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { Button } from 'react-native-elements/dist/buttons/Button';
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import * as BASE from '../api/base'
+import LinearGradient from 'react-native-linear-gradient';
+const { width } = Dimensions.get('window');
 
-const PosterMovie = ({item}) => {
-console.log("🚀 ~ file: PosterMovie.js ~ line 9 ~ PosterMovie ~ item", item)
-    
+const PosterMovie = ({ item }) => {
     return (
         <View style={styles.container}>
             <Image
-                source={{ uri: 'https://image.tmdb.org/t/p/w500/2MJz10b6ItzpKm3vb95S3X5Vcna.jpg' }}
+                source={{ uri: `${BASE.BASE_URL_POSTER}${item?.poster_path ?? '/xF1uc2pEf34X2G41wvZaF5H0V7C.jpg'}` }}
                 containerStyle={styles.image}
-                PlaceholderContent={<ActivityIndicator />}
+                PlaceholderContent={<ActivityIndicator color='red' size='large' />}
+                placeholderStyle={{ flex: 1, backgroundColor: 'white' }}
                 resizeMode='stretch'
-            />
+            >
+                <LinearGradient
+                    colors={[
+                        'transparent',
+                        'black',
+                    ]}
+                    style={styles.linearGradient}
+                />
+            </Image>
             <View style={{ padding: 10, justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-                <Text style={styles.genrers}>Hello * BAlO * LoCA * ASAMSM</Text>
+                {item?.genres && item.genres.map((x, i) => {
+                    if (i !== item.genres.length - 1) {
+                        return (
+                            <Text style={styles.genrers} key={i.toString()}>{x.name} * </Text>
+                        )
+                    } else {
+                        return (
+                            <Text style={styles.genrers} key={i.toString()}>{x.name}</Text>
+                        )
+                    }
+                })}
                 <View style={{
                     flexDirection: 'row',
                     alignItems: 'center',
@@ -54,13 +74,20 @@ const styles = StyleSheet.create({
     genrers: {
         color: 'white',
         textAlign: 'center',
-        fontSize: 16,
-        fontWeight: '800'
+        fontSize: 14,
+        fontWeight: '800',
+        width:'100%'
     },
     btn: {
         justifyContent: 'center',
         alignItems: 'center',
         width: 80,
         height: 60
-    }
+    },
+    linearGradient: {
+        width,
+        height: 200,
+        position:'absolute',
+        top:300
+      },
 })

@@ -7,7 +7,6 @@ import { ACTIONS } from '../redux/action/authenAction';
 const SplashScreen = () => {
 
   const dispatch = useDispatch();
-  console.log('api key: >> ', BASE.API_KEY)
 
   setTimeout(()=>{
     dispatch(ACTIONS.tokenRequest({ api_key: BASE.API_KEY }))
