@@ -14,12 +14,10 @@ export const goback = () => {
   }
 }
 
-export function navigateReplace(name, param) {
+export function navigateReplace(name, params) {
   if (navigationRef.isReady()) {
     navigationRef.dispatch(
-      StackActions.replace(name, {
-        param,
-      }),
+      StackActions.replace(name, params),
     );
   }
 }

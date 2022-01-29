@@ -3,13 +3,14 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from "react-native-vector-icons/Ionicons"
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Details from "../screen/Details";
 import HomeScreen from "../screen/HomeScreen";
 import NewAndHotScreen from "../screen/NewAndHotScreen";
 import SearchScreen from "../screen/SearchScreen";
 import Login from '../screen/auth/Login'
 import { navigationRef } from "./rootNavigation";
 import SplashScreen from "../screen/SplashScreen";
+import MovieDetail from "../screen/MovieDetail";
+import TVDetail from "../screen/TVDetail";
 const Tab = createBottomTabNavigator();
 const AppStack = createNativeStackNavigator()
 
@@ -74,7 +75,14 @@ const MainStack = () => {
         options={({ route }) => ({
           headerShown: false,
         })} />
-        <AppStack.Screen name = "Details" component = {Details}/>
+        <AppStack.Screen name = "MovieDetail" component = {MovieDetail}
+        options={({ route }) => ({
+          headerShown: false,
+        })} />
+        <AppStack.Screen name = "TVDetail" component = {TVDetail}
+        options={({ route }) => ({
+          headerShown: false,
+        })} />
       </AppStack.Navigator>
     </NavigationContainer>
   )

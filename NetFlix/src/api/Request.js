@@ -50,7 +50,7 @@ export const getLatestMovie = (params) => {
 }
 
 export const getMovieDetail = (id,params) => {
-    return processResponse(NAxios.get(`${Urls.URL_MOVIE_DETAIL}/${id}${buildGetParams(params)}`))
+    return processResponse(NAxios.get(`${Urls.URL_MOVIE_DETAIL(id)}${buildGetParams(params)}`))
 }
 
 export const getListMovieTrending = (params) => {
@@ -59,6 +59,14 @@ export const getListMovieTrending = (params) => {
 
 export const getMovieCategory = (params) => {
     return processResponse(NAxios.get(`${Urls.URL_CATEGORY_MOVIE}${buildGetParams(params)}`))
+}
+
+export const getMovieVideo = (idMovie, params) => {
+    return processResponse(NAxios.get(`${Urls.URL_MOVIE_VIDEO(idMovie)}${buildGetParams(params)}`))
+}
+
+export const getMovieRecomendation = (movieId, params) => {
+    return processResponse(NAxios.get(`${Urls.URL_MOVIE_RECOMENDATION(movieId)}${buildGetParams(params)}`))
 }
 
 //TV
@@ -71,13 +79,28 @@ export const getListTVTrending = (params) => {
     return processResponse(NAxios.get(`${Urls.URL_TV_TRENDING}${buildGetParams(params)}`))
 }
 
-export const getTVDetail = (params) => {
-    return processResponse(NAxios.get(`${Urls.URL_TV_DETAIl}${buildGetParams(params)}`))
+export const getTVDetail = (tvId,params) => {
+    return processResponse(NAxios.get(`${Urls.URL_TV_DETAIl(tvId)}${buildGetParams(params)}`))
 }
 
 export const getListDiscoverMovie = (params) => {
     return processResponse(NAxios.get(`${Urls.URL_DISCOVER_MOVIE}${buildGetParams(params)}`))
 }
+
+export const getTvVideo = (idTv, params) => {
+    return processResponse(NAxios.get(`${Urls.URL_TV_VIDEO(idTv)}${buildGetParams(params)}`))
+}
+
+export const getTvRecomendation = (tvId, params) => {
+    return processResponse(NAxios.get(`${Urls.URL_TV_RECOMENDATION(tvId)}${buildGetParams(params)}`))
+}
+
+// colection
+
+export const getListColections = (colectionId, params) => {
+    return processResponse(NAxios.get(`${Urls.URL_COLECTION(colectionId)}${buildGetParams(params)}`))
+}
+
 
 
 

@@ -1,7 +1,9 @@
 import {
   View, Text, TouchableOpacity,
   StyleSheet,
-  FlatList
+  FlatList,
+  SafeAreaView,
+  Platform
 } from 'react-native';
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import * as BASE from '../api/base'
@@ -11,6 +13,7 @@ import { useDispatch } from 'react-redux';
 import { ACTIONS } from '../redux/action/moviesAction';
 import { Image } from 'react-native-elements'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import { navigate } from '../navbar/rootNavigation';
 
 const params = {
   api_key: BASE.API_KEY,
@@ -25,14 +28,13 @@ const paramsDiscover = {
 
 
 
-const HomeScreen = ({ navigation, route }) => {
+const HomeScreen = () => {
 
   const [dataHome, setDataHome] = useState([])
   const [dataPoster, setDataPoster] = useState({})
   const [showMenu, setShowMenu] = useState(true)
   const offsetScroll = useRef(0)
   const dispatch = useDispatch()
-  console.log('render:>>')
 
   useEffect(() => {
     dispatch(ACTIONS.getListMoviesCategory())
@@ -53,39 +55,49 @@ const HomeScreen = ({ navigation, route }) => {
       response.forEach((value, index) => {
         if (index != 0) {
           let titleData = "";
+          let subject = ""
           switch (index) {
             case 1:
               titleData = "Phim thịnh hành";
+              subject = "movie"
               break;
             case 2:
               titleData = "Movies Trending";
+              subject = "movie"
               break;
             case 3:
               titleData = "TV thịnh hành"
+              subject = "tv"
               break
             case 4:
               titleData = "TV Trending"
+              subject = "tv"
               break
             case 5:
               titleData = "Phim hoạt hình"
+              subject = "movie"
               break
             case 6:
               titleData = "Phim hài"
+              subject = "movie"
               break
             case 7:
               titleData = "Phim kinh dị"
+              subject = "movie"
               break
             case 8:
               titleData = "Phim lãng mạn"
+              subject = "movie"
               break
           }
+          value.data.results = value.data.results.map((item) => ({...item,subject}))
           const data = {
             title: titleData,
             data: value.data.results
           };
           dataOut.push(data);
         } else {
-          setDataPoster(value)
+          setDataPoster({...value,subject:'movie'})
         }
       })
       setDataHome(dataOut)
@@ -125,7 +137,15 @@ const HomeScreen = ({ navigation, route }) => {
                 }}
                 renderItem={({ item, index }) => {
                   return (
-                    <TouchableOpacity style={{ paddingRight: 5, paddingVertical: 10 }}>
+                    <TouchableOpacity 
+                    style={{ paddingRight: 5, paddingVertical: 10 }}
+                    onPress={()=> {
+                        if(item.subject == 'tv'){
+                          navigate('TVDetail',item)
+                        }else{
+                          navigate('MovieDetail',item)
+                        }
+                    }}>
                       <Image
                         source={{ uri: BASE.BASE_URL_IMAGE + item.poster_path }}
                         containerStyle={{ height: 200, width: 130, borderRadius: 8, }}
@@ -142,7 +162,7 @@ const HomeScreen = ({ navigation, route }) => {
         ListHeaderComponent={<PosterMovie item={dataPoster.data}/>}
       />
       {showMenu &&
-        <View style={styles.menu}>
+        <SafeAreaView style={styles.menu}>
           <View style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
@@ -189,7 +209,7 @@ const HomeScreen = ({ navigation, route }) => {
               <MaterialIcons name='arrow-drop-down' color='white' size={22} />
             </TouchableOpacity>
           </View>
-        </View>}
+        </SafeAreaView>}
     </View>
   );
 };
@@ -202,7 +222,7 @@ const styles = StyleSheet.create({
     top: 0,
     backgroundColor: 'rgba(52, 52, 52, 0.2)',
     width: '100%',
-    height: 90
+    height: Platform.OS == 'android' ? 90 : 140
   },
   txtMenu: {
     color: 'white',

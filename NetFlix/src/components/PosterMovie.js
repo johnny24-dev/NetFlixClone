@@ -25,6 +25,14 @@ const PosterMovie = ({ item }) => {
                     ]}
                     style={styles.linearGradient}
                 />
+                <LinearGradient
+                    colors={[
+                        'black',
+                        'transparent',
+                        
+                    ]}
+                    style={styles.linearGradientTop}
+                />
             </Image>
             <View style={{ padding: 10, justifyContent: 'center', alignItems: 'center', width: '100%' }}>
                 {item?.genres && item.genres.map((x, i) => {
@@ -90,4 +98,10 @@ const styles = StyleSheet.create({
         position:'absolute',
         top:300
       },
+    linearGradientTop:{
+        width,
+        height: 250,
+        position:'absolute',
+        top:0
+    }
 })
