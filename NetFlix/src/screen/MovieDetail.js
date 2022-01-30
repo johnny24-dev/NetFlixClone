@@ -22,8 +22,10 @@ const displayRuntime = (runTime) => {
 }
 
 const MovieDetail = ({ route }) => {
+console.log("🚀 ~ file: MovieDetail.js ~ line 25 ~ MovieDetail ~ route", route)
 
   const movieId = route?.params.id
+  console.log("🚀 ~ file: MovieDetail.js ~ line 27 ~ MovieDetail ~ movieId", movieId)
   const [dataMovie, setDataMovie] = useState({});
   console.log("🚀 ~ file: MovieDetail.js ~ line 19 ~ MovieDetail ~ dataMovie", dataMovie)
 
@@ -34,6 +36,7 @@ const MovieDetail = ({ route }) => {
         getMovieVideo(movieId, { ...queryParams, language: 'en' }),
         getMovieRecomendation(movieId, queryParams),
       ])
+      console.log("🚀 ~ file: MovieDetail.js ~ line 39 ~ fetchMovieDetail ~ response", response)
       const data = { ...response[0].data, keyYoutube: response[1].data.results[0].key, recomended: response[2].data.results }
       setDataMovie(data)
     }

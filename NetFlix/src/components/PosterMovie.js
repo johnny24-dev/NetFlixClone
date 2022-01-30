@@ -8,7 +8,7 @@ import * as BASE from '../api/base'
 import LinearGradient from 'react-native-linear-gradient';
 const { width } = Dimensions.get('window');
 
-const PosterMovie = ({ item }) => {
+const PosterMovie = ({ item, dandleInfo }) => {
     return (
         <View style={styles.container}>
             <Image
@@ -60,7 +60,8 @@ const PosterMovie = ({ item }) => {
                         containerStyle={{ backgroundColor: 'white', paddingHorizontal: 10 }}
                         title='Phát'
                         titleStyle={{ color: 'black' }} />
-                    <TouchableOpacity style={styles.btn}>
+                    <TouchableOpacity style={styles.btn}
+                    onPress={dandleInfo}>
                         <Ionicons name='ios-information-circle-outline' size={26} color='white' />
                         <Text style={{ color: 'white', fontWeight: 'bold' }}>Thông tin</Text>
                     </TouchableOpacity>

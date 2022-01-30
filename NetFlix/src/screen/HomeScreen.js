@@ -26,6 +26,10 @@ const paramsDiscover = {
   sort_by: 'popularity.desc'
 }
 
+const gotoDetail = (item) => {
+  navigate('MovieDetail',item)
+}
+
 
 
 const HomeScreen = () => {
@@ -159,7 +163,7 @@ const HomeScreen = () => {
             </View>
           )
         }}
-        ListHeaderComponent={<PosterMovie item={dataPoster.data}/>}
+        ListHeaderComponent={<PosterMovie item={dataPoster.data} dandleInfo={()=> gotoDetail(dataPoster.data)}/>}
       />
       {showMenu &&
         <SafeAreaView style={styles.menu}>

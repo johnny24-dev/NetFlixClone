@@ -34,7 +34,7 @@ export default {
    URL_TV_TRENDING,
    URL_DISCOVER_MOVIE,
    URL_MOVIE_VIDEO : (idMovie) => (`/movie/${idMovie}/videos`),
-   URL_TV_VIDEO : (idTv) => (`/movie/${idTv}/videos`),
+   URL_TV_VIDEO : (idTv) => (`/tv/${idTv}/videos`),
    URL_MOVIE_RECOMENDATION : (movieId) => (`/movie/${movieId}/recommendations`),
    URL_TV_RECOMENDATION : (tvId) => (`/tv/${tvId}/recommendations`),
    URL_COLECTION : (colectionId) => (`/collection/${colectionId}`),
