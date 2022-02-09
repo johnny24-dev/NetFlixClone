@@ -5,6 +5,8 @@ import * as BASE from '../api/base'
 import { navigate } from '../navbar/rootNavigation'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+
+
 const NowAndTopMovie = ({ list, find_dimesions }) => {
     return (
         <View style={{ paddingHorizontal: 10, flex: 1, }}
