@@ -14,11 +14,13 @@ export const URL_CATEGORY_MOVIE = '/genre/movie/list'
 export const URL_DISCOVER_MOVIE = '/discover/movie'
 export const URL_MOVIE_NOW_PLAYING = '/movie/now_playing'
 export const URL_MOVIE_TOP_RATE = '/movie/top_rated'
+export const URL_SEARCH_MOVIE = '/search/movie'
 
 //TV shows
 
 export const URL_TV_POPULAR = '/tv/popular'
 export const URL_TV_TRENDING = '/trending/tv/week'
+export const URL_SEARCH_TV = '/search/tv'
 
 export default {
    URL_REQUEST_TOKEN,
@@ -42,4 +44,6 @@ export default {
    URL_COLECTION : (colectionId) => (`/collection/${colectionId}`),
    URL_MOVIE_NOW_PLAYING,
    URL_MOVIE_TOP_RATE,
+   URL_SEARCH_MOVIE,
+   URL_SEARCH_TV,
 }

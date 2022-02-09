@@ -28,10 +28,7 @@ const NewAndHotScreen = () => {
   const [indexScrool, setIndexScrool] = useState(0)
 
   const [offsetNowPlaying, setOffsetNowPlaying] = useState(0)
-  console.log("🚀 ~ file: NewAndHotScreen.js ~ line 30 ~ NewAndHotScreen ~ offsetNowPlaying", offsetNowPlaying)
   const [offsetTop, setOffsetTop] = useState(0)
-  console.log("🚀 ~ file: NewAndHotScreen.js ~ line 32 ~ NewAndHotScreen ~ offsetTop", offsetTop)
-  console.log("🚀 ~ file: NewAndHotScreen.js ~ line 28 ~ NewAndHotScreen ~ indexScrool", indexScrool)
   const [data, setData] = useState([])
   const movieCategory = useSelector(state => state.moviesReducer.category)
 
@@ -78,11 +75,9 @@ const NewAndHotScreen = () => {
       scrollHorizontal.current?.scrollTo({ x: 0, y: 0, animated: true })
 
     } else if (currentOffset >= offsetNowPlaying && currentOffset < offsetTop ) {
-      console.log('vao 2')
       setIndexScrool(1)
-      scrollHorizontal.current?.scrollTo({ x: 180, y: 0, animated: true })
+      scrollHorizontal.current?.scrollTo({ x: 200, y: 0, animated: true })
     } else if (currentOffset >= offsetTop) {
-      console.log('vao 3')
       setIndexScrool(2)
       scrollHorizontal.current?.scrollToEnd({ animated: true })
     }
@@ -142,7 +137,9 @@ const NewAndHotScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
-      <ScrollView horizontal ref={scrollHorizontal} >
+      <ScrollView horizontal 
+      ref={scrollHorizontal} 
+      showsHorizontalScrollIndicator={false}>
         <TouchableOpacity style={[styles.chip, indexScrool == 0 && styles.hightLightBtn]}
         onPress={()=>{
           scrollRef.current?.scrollTo({ x: 0, y: 0, animated: true })
@@ -154,6 +151,7 @@ const NewAndHotScreen = () => {
         </TouchableOpacity>
         <TouchableOpacity style={[styles.chip, indexScrool == 1 && styles.hightLightBtn]}
         onPress = { () => {
+          scrollHorizontal.current?.scrollTo({ x: 200, y: 0, animated: true })
           scrollRef.current?.scrollTo({ x: 0, y: offsetNowPlaying, animated: true })
           setIndexScrool(1)
         }

@@ -109,6 +109,16 @@ export const getListColections = (colectionId, params) => {
     return processResponse(NAxios.get(`${Urls.URL_COLECTION(colectionId)}${buildGetParams(params)}`))
 }
 
+//search
+
+export const getListMovieSearch = (params) => {
+    return processResponse(NAxios.get(`${Urls.URL_SEARCH_MOVIE}${buildGetParams(params)}`))
+}
+
+export const getListTvSearch = (params) =>{
+    return processResponse(NAxios.get(`${Urls.URL_SEARCH_TV}${buildGetParams(params)}`))
+}
+
 
 
 

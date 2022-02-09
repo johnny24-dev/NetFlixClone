@@ -7,7 +7,7 @@ const ProgressHUB = ({ visible }) => {
     return (
         <Modal
             visible={visible}
-            animationType='slide'
+            animationType='fade'
             transparent={true}>
             <ActivityIndicator size='large' color='red' style = {{flex:1}}/>
         </Modal>
