@@ -12,6 +12,8 @@ export const URL_LATEST_MOVIE = '/movie/latest'
 export const URL_MOVIE_TRENDING = '/trending/movie/week'
 export const URL_CATEGORY_MOVIE = '/genre/movie/list'
 export const URL_DISCOVER_MOVIE = '/discover/movie'
+export const URL_MOVIE_NOW_PLAYING = '/movie/now_playing'
+export const URL_MOVIE_TOP_RATE = '/movie/top_rated'
 
 //TV shows
 
@@ -38,4 +40,6 @@ export default {
    URL_MOVIE_RECOMENDATION : (movieId) => (`/movie/${movieId}/recommendations`),
    URL_TV_RECOMENDATION : (tvId) => (`/tv/${tvId}/recommendations`),
    URL_COLECTION : (colectionId) => (`/collection/${colectionId}`),
+   URL_MOVIE_NOW_PLAYING,
+   URL_MOVIE_TOP_RATE,
 }

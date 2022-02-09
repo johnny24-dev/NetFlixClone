@@ -69,6 +69,14 @@ export const getMovieRecomendation = (movieId, params) => {
     return processResponse(NAxios.get(`${Urls.URL_MOVIE_RECOMENDATION(movieId)}${buildGetParams(params)}`))
 }
 
+export const getListMovieNowPlaying = (params) => {
+    return processResponse(NAxios.get(`${Urls.URL_MOVIES_UPCOMMING}${buildGetParams(params)}`))
+}
+
+export const getListMovieTopRate = (params) => {
+    return processResponse(NAxios.get(`${Urls.URL_MOVIE_TOP_RATE}${buildGetParams(params)}`))
+}
+
 //TV
 
 export const getListTVPopular = (params) => {

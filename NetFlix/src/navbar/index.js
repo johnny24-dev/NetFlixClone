@@ -48,7 +48,8 @@ const TabNavigator = () => {
       <Tab.Screen name="New And Hots" component={NewAndHotScreen}
         options={({ route }) => ({
           headerTitle: "Mới & Hot",
-          tabBarLabel: 'Mới & Hot'
+          tabBarLabel: 'Mới & Hot',
+          headerShown:false
         })} />
       <Tab.Screen name="Searchs" component={SearchScreen}
         options={({ route }) => ({
