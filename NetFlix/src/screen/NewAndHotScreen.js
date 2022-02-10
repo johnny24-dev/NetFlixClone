@@ -9,7 +9,7 @@ import { getListMovieNowPlaying, getListMovieTopRate, getListMovieUpComing } fro
 import { useSelector } from 'react-redux';
 import UpComming from '../components/UpComming';
 import NowAndTopMovie from '../components/NowAndTopMovie';
-
+import { hideAlert, showAlert, TYPE } from '../components/Alert'
 
 const queryParams = {
   api_key: BASE.API_KEY,
@@ -34,34 +34,37 @@ const NewAndHotScreen = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await Promise.all([
-        getListMovieUpComing(queryParams),
-        getListMovieNowPlaying(queryParams),
-        getListMovieTopRate(queryParams)])
-
-
-      // map movie category
-
-      response.forEach((value) => {
-        value.data.results.forEach((itemValue) => {
-          itemValue.category = itemValue.genre_ids?.map((item) => {
-            movieCategory.map((x) => {
-              if (item == x.id) {
-                item = x
-              }
+      try {
+        const response = await Promise.all([
+          getListMovieUpComing(queryParams),
+          getListMovieNowPlaying(queryParams),
+          getListMovieTopRate(queryParams)])
+        console.log("🚀 ~ file: NewAndHotScreen.js ~ line 41 ~ fetchData ~ response", response)
+        // map movie category
+        response.forEach((value) => {
+          value.data.results.forEach((itemValue) => {
+            itemValue.category = itemValue.genre_ids?.map((item) => {
+              movieCategory.map((x) => {
+                if (item == x.id) {
+                  item = x
+                }
+              })
+              return item
             })
-            return item
           })
         })
-      })
 
-      let dataOut = {}
-      dataOut.upComming = response[0].data.results
-      dataOut.upComming
-      dataOut.nowPlaying = response[1].data.results
-      dataOut.topRate = response[2].data.results
+        let dataOut = {}
+        dataOut.upComming = response[0].data.results
+        dataOut.upComming
+        dataOut.nowPlaying = response[1].data.results
+        dataOut.topRate = response[2].data.results
 
-      setData(dataOut)
+        setData(dataOut)
+      } catch (error) {
+        console.log("🚀 ~ file: NewAndHotScreen.js ~ line 68 ~ fetchData ~ error", error)
+        
+      }
     }
 
     fetchData()
@@ -69,25 +72,25 @@ const NewAndHotScreen = () => {
   }, [])
 
   useEffect(() => {
-   if(offsetNowPlaying > 0 && offsetTop > 0 ){
-    if (currentOffset < offsetNowPlaying) {
-      setIndexScrool(0)
-      scrollHorizontal.current?.scrollTo({ x: 0, y: 0, animated: true })
+    if (offsetNowPlaying > 0 && offsetTop > 0) {
+      if (currentOffset < offsetNowPlaying) {
+        setIndexScrool(0)
+        scrollHorizontal.current?.scrollTo({ x: 0, y: 0, animated: true })
 
-    } else if (currentOffset >= offsetNowPlaying && currentOffset < offsetTop ) {
-      setIndexScrool(1)
-      scrollHorizontal.current?.scrollTo({ x: 200, y: 0, animated: true })
-    } else if (currentOffset >= offsetTop) {
-      setIndexScrool(2)
-      scrollHorizontal.current?.scrollToEnd({ animated: true })
+      } else if (currentOffset >= offsetNowPlaying && currentOffset < offsetTop) {
+        setIndexScrool(1)
+        scrollHorizontal.current?.scrollTo({ x: 200, y: 0, animated: true })
+      } else if (currentOffset >= offsetTop) {
+        setIndexScrool(2)
+        scrollHorizontal.current?.scrollToEnd({ animated: true })
+      }
+    } else {
+      console.log('exception:>')
     }
-   }else {
-     console.log('exception:>')
-   }
   }, [currentOffset])
 
 
-  const handleScroll = (event) => {
+  const handleScroll = useCallback((event) => {
     const offset = event.nativeEvent.contentOffset.y;
     if (offset < offsetNowPlaying && offsetNowPlaying > 0) {
       setCurrentOffset(0)
@@ -95,9 +98,9 @@ const NewAndHotScreen = () => {
       setCurrentOffset(offsetNowPlaying)
     } else if (offset >= offsetTop && offsetTop > 0) {
       setCurrentOffset(offsetTop)
-      
+
     }
-  };
+  },[offsetNowPlaying,offsetTop]);
 
   const find_dimesion2 = useCallback((event) => {
     const { x, y, width, height } = event.nativeEvent.layout;
@@ -137,34 +140,35 @@ const NewAndHotScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
-      <ScrollView horizontal 
-      ref={scrollHorizontal} 
-      showsHorizontalScrollIndicator={false}>
+      <ScrollView horizontal
+        ref={scrollHorizontal}
+        showsHorizontalScrollIndicator={false}>
         <TouchableOpacity style={[styles.chip, indexScrool == 0 && styles.hightLightBtn]}
-        onPress={()=>{
-          scrollRef.current?.scrollTo({ x: 0, y: 0, animated: true })
-          setIndexScrool(0)
-        }}>
+          onPress={() => {
+            setIndexScrool(0)
+            scrollRef.current?.scrollTo({ x: 0, y: 0, animated: true })
+          }}>
           <Image source={require('../assets/popcorn.png')}
             style={{ width: 35, height: 35 }} />
           <Text style={[styles.txtChip, indexScrool == 0 && styles.hightLightTxt]}>Sắp ra mắt</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.chip, indexScrool == 1 && styles.hightLightBtn]}
-        onPress = { () => {
-          scrollHorizontal.current?.scrollTo({ x: 200, y: 0, animated: true })
-          scrollRef.current?.scrollTo({ x: 0, y: offsetNowPlaying, animated: true })
-          setIndexScrool(1)
-        }
-        }>
+          onPress={() => {
+            setIndexScrool(1)
+            scrollHorizontal.current?.scrollTo({ x: 200, y: 0, animated: true })
+            scrollRef.current?.scrollTo({ x: 0, y: offsetNowPlaying, animated: true })
+          }
+          }>
           <Image source={require('../assets/flames.png')}
             style={{ width: 35, height: 35 }} />
           <Text style={[styles.txtChip, indexScrool == 1 && styles.hightLightTxt]}>Mọi người đang xem</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.chip, indexScrool == 2 && styles.hightLightBtn]} 
-        onPress = {() => {
-          scrollHorizontal.current.scrollToEnd({ animated: true })
-          scrollRef.current?.scrollTo({ x: 0, y: offsetTop, animated: true })
-          setIndexScrool(2)
+        <TouchableOpacity style={[styles.chip, indexScrool == 2 && styles.hightLightBtn]}
+          onPress={() => {
+            setIndexScrool(2)
+            scrollHorizontal.current.scrollToEnd({ animated: true })
+            scrollRef.current?.scrollTo({ x: 0, y: offsetTop, animated: true })
+            
           }}>
           <Image source={require('../assets/top-rated.png')}
             style={{ width: 35, height: 35 }} />
@@ -174,7 +178,7 @@ const NewAndHotScreen = () => {
       <ScrollView
         onScroll={handleScroll}
         ref={scrollRef}
-        style={{marginTop:10}}
+        style={{ marginTop: 10 }}
       >
         <UpComming list={data.upComming} />
         <NowAndTopMovie list={data.nowPlaying} find_dimesions={find_dimesion2} />
@@ -214,7 +218,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold'
   },
-  hightLightBtn:{
+  hightLightBtn: {
     marginVertical: 15,
     marginRight: 5,
     flexDirection: 'row',
@@ -226,7 +230,7 @@ const styles = StyleSheet.create({
     padding: 15,
     marginLeft: 10
   },
-  hightLightTxt:{
+  hightLightTxt: {
     color: 'black',
     fontWeight: 'bold'
   }

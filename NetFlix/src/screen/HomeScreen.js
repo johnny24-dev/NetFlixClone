@@ -198,10 +198,12 @@ const HomeScreen = () => {
             alignItems: 'center',
             marginTop: 15
           }}>
-            <TouchableOpacity>
+            <TouchableOpacity
+            onPress={()=> navigate('TvShow')}>
               <Text style={styles.txtMenu}>Phim T.hình</Text>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity
+            onPress={()=> navigate('Movies')}>
               <Text style={styles.txtMenu}>Phim</Text>
             </TouchableOpacity>
             <TouchableOpacity style={{

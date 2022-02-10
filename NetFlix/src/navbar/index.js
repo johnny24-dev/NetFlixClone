@@ -11,6 +11,8 @@ import { navigationRef } from "./rootNavigation";
 import SplashScreen from "../screen/SplashScreen";
 import MovieDetail from "../screen/MovieDetail";
 import TVDetail from "../screen/TVDetail";
+import TvShow from "../screen/TvShow";
+import Movies from "../screen/Movies";
 const Tab = createBottomTabNavigator();
 const AppStack = createNativeStackNavigator()
 
@@ -81,6 +83,14 @@ const MainStack = () => {
           headerShown: false,
         })} />
         <AppStack.Screen name = "TVDetail" component = {TVDetail}
+        options={({ route }) => ({
+          headerShown: false,
+        })} />
+        <AppStack.Screen name = "TvShow" component = {TvShow}
+        options={({ route }) => ({
+          headerShown: false,
+        })} />
+        <AppStack.Screen name = "Movies" component = {Movies}
         options={({ route }) => ({
           headerShown: false,
         })} />

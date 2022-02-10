@@ -255,23 +255,21 @@ const TVDetail = ({ route }) => {
           fontSize: 16,
           marginTop: 10
         }}
-        >Nội dung tương tự</Text>
+        >Các phần phim</Text>
         <FlatList
-          data={dataTv.listColection}
+          data={dataTv.seasons}
           keyExtractor={(item, index) => (index + "w")}
           renderItem={({ item, index }) => {
             return (
-              <TouchableOpacity
+              <View
                 style={{ paddingRight: 5, paddingVertical: 10 }}
-                onPress={() => {
-                  navigateReplace('MovieDetail', item)
-                }}>
+               >
                 <Image
                   source={{ uri: BASE.BASE_URL_IMAGE + item.poster_path }}
                   containerStyle={{ height: 150, width: 100, borderRadius: 8, }}
                   resizeMode='stretch'
                 />
-              </TouchableOpacity>
+              </View>
             )
           }}
           horizontal />
