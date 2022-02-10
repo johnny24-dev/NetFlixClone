@@ -7,15 +7,22 @@ import {
 import React, { useCallback, useState, useEffect, useRef } from 'react'
 import * as BASE from '../api/base'
 import { navigate } from '../navbar/rootNavigation'
-import { getListPopilarMovie, getListTVPopular } from '../api/Request'
+import { getListDiscoverMovie } from '../api/Request'
 import { Image } from 'react-native-elements'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { goback } from '../navbar/rootNavigation'
+import CategoryModal from '../components/CategoryModal'
 
 const queryParams = {
     api_key: BASE.API_KEY,
     language: 'vi',
     page: 1
+}
+
+const paramsDiscover = {
+    ...queryParams,
+    sort_by: 'popularity.desc'
 }
 
 const renderLoader = () => {
@@ -29,13 +36,15 @@ const renderLoader = () => {
     )
 }
 
-const Movies = () => {
+
+const ListMoviesByCategoryScreen = ({ route }) => {
+
+    const category = route?.params
     const [dataSource, setDataSource] = useState([])
     const [currentPage, setCurentPage] = useState(1)
-
+    const [showCategory, setShowCategory] = useState(false)
     const fetchData = async () => {
-        const { error, data } = await getListPopilarMovie({ ...queryParams, page: currentPage })
-
+        const { error, data } = await getListDiscoverMovie({ ...paramsDiscover, page: currentPage, with_genres: category.id })
         setDataSource([...dataSource, ...data.results])
     }
 
@@ -46,6 +55,10 @@ const Movies = () => {
     const loadMoreItem = () => {
         console.log('load more')
         setCurentPage(currentPage + 1)
+    }
+
+    const handelClose = () => {
+        setShowCategory(!showCategory)
     }
 
     return (
@@ -92,19 +105,22 @@ const Movies = () => {
                 {
                     position: 'absolute',
                     width: '100%',
-                    top: Platform.OS == 'ios' ? 30: 0,
+                    top: Platform.OS == 'ios' ? 30 : 0,
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     backgroundColor: 'black'
                 }
             }>
-                <Text style={{
-                    color: 'white',
-                    fontWeight: 'bold',
-                    marginLeft: 10,
-                    fontSize: 22
-                }}>Phim</Text>
+                <TouchableOpacity style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}
+                    onPress={() => setShowCategory(true)}>
+                    <Text style={styles.txtMenu}>{category.name}</Text>
+                    <MaterialIcons name='arrow-drop-down' color='white' size={22} />
+                </TouchableOpacity>
                 <TouchableOpacity
                     style={{
                         backgroundColor: '#999999',
@@ -120,11 +136,15 @@ const Movies = () => {
                     <Ionicons name='close' color='white' size={20} />
                 </TouchableOpacity>
             </View>
+            <CategoryModal
+                visiableCategory={showCategory}
+                handleClose={handelClose}
+                fromScreen='ListMoviesByCategory' />
         </SafeAreaView>
     )
 }
 
-export default Movies
+export default ListMoviesByCategoryScreen
 
 const styles = StyleSheet.create({
     container: {
@@ -138,4 +158,10 @@ const styles = StyleSheet.create({
         height: 200,
         borderRadius: 10
     },
+    txtMenu: {
+        color: 'white',
+        fontWeight: 'bold',
+        marginLeft: 10,
+        fontSize: 22
+    }
 })

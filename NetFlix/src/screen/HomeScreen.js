@@ -14,6 +14,7 @@ import { ACTIONS } from '../redux/action/moviesAction';
 import { Image } from 'react-native-elements'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { navigate } from '../navbar/rootNavigation';
+import CategoryModal from '../components/CategoryModal';
 
 const params = {
   api_key: BASE.API_KEY,
@@ -27,7 +28,7 @@ const paramsDiscover = {
 }
 
 const gotoDetail = (item) => {
-  navigate('MovieDetail',item)
+  navigate('MovieDetail', item)
 }
 
 
@@ -37,6 +38,7 @@ const HomeScreen = () => {
   const [dataHome, setDataHome] = useState([])
   const [dataPoster, setDataPoster] = useState({})
   const [showMenu, setShowMenu] = useState(true)
+  const [showCategory, setShowCategory] = useState(false)
   const offsetScroll = useRef(0)
   const dispatch = useDispatch()
 
@@ -94,14 +96,14 @@ const HomeScreen = () => {
               subject = "movie"
               break
           }
-          value.data.results = value.data.results.map((item) => ({...item,subject}))
+          value.data.results = value.data.results.map((item) => ({ ...item, subject }))
           const data = {
             title: titleData,
             data: value.data.results
           };
           dataOut.push(data);
         } else {
-          setDataPoster({...value,subject:'movie'})
+          setDataPoster({ ...value, subject: 'movie' })
         }
       })
       setDataHome(dataOut)
@@ -119,6 +121,10 @@ const HomeScreen = () => {
     }
     offset >= 0 ? offsetScroll.current = offset : offsetScroll.current = 0
   }, []);
+
+  const handelClose = () => {
+    setShowCategory(!showCategory)
+  }
 
 
   return (
@@ -141,15 +147,15 @@ const HomeScreen = () => {
                 }}
                 renderItem={({ item, index }) => {
                   return (
-                    <TouchableOpacity 
-                    style={{ paddingRight: 5, paddingVertical: 10 }}
-                    onPress={()=> {
-                        if(item.subject == 'tv'){
-                          navigate('TVDetail',item)
-                        }else{
-                          navigate('MovieDetail',item)
+                    <TouchableOpacity
+                      style={{ paddingRight: 5, paddingVertical: 10 }}
+                      onPress={() => {
+                        if (item.subject == 'tv') {
+                          navigate('TVDetail', item)
+                        } else {
+                          navigate('MovieDetail', item)
                         }
-                    }}>
+                      }}>
                       <Image
                         source={{ uri: BASE.BASE_URL_IMAGE + item.poster_path }}
                         containerStyle={{ height: 200, width: 130, borderRadius: 8, }}
@@ -163,7 +169,7 @@ const HomeScreen = () => {
             </View>
           )
         }}
-        ListHeaderComponent={<PosterMovie item={dataPoster.data} dandleInfo={()=> gotoDetail(dataPoster.data)}/>}
+        ListHeaderComponent={<PosterMovie item={dataPoster.data} dandleInfo={() => gotoDetail(dataPoster.data)} />}
       />
       {showMenu &&
         <SafeAreaView style={styles.menu}>
@@ -199,22 +205,25 @@ const HomeScreen = () => {
             marginTop: 15
           }}>
             <TouchableOpacity
-            onPress={()=> navigate('TvShow')}>
+              onPress={() => navigate('TvShow')}>
               <Text style={styles.txtMenu}>Phim T.hình</Text>
             </TouchableOpacity>
             <TouchableOpacity
-            onPress={()=> navigate('Movies')}>
+              onPress={() => navigate('Movies')}>
               <Text style={styles.txtMenu}>Phim</Text>
             </TouchableOpacity>
             <TouchableOpacity style={{
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'center'
-            }}>
+            }}
+              onPress={() => setShowCategory(true)}>
               <Text style={styles.txtMenu}>Phân loại</Text>
               <MaterialIcons name='arrow-drop-down' color='white' size={22} />
             </TouchableOpacity>
           </View>
+          <CategoryModal visiableCategory={showCategory}
+            handleClose={handelClose} />
         </SafeAreaView>}
     </View>
   );

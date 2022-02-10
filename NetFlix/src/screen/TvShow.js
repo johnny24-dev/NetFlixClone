@@ -1,7 +1,8 @@
 import {
     StyleSheet, Text, View,
     SafeAreaView, FlatList, TouchableOpacity,
-    ActivityIndicator
+    ActivityIndicator,
+    Platform
 } from 'react-native'
 import React, { useCallback, useState, useEffect, useRef } from 'react'
 import * as BASE from '../api/base'
@@ -31,9 +32,7 @@ const renderLoader = () => {
 const TvShow = () => {
 
     const [dataSource, setDataSource] = useState([])
-    console.log("🚀 ~ file: TvShow.js ~ line 32 ~ TvShow ~ dataSource", dataSource)
     const [currentPage, setCurentPage] = useState(1)
-    console.log("🚀 ~ file: TvShow.js ~ line 34 ~ TvShow ~ currentPage", currentPage)
 
     const fetchData = async () => {
         const { error, data } = await getListTVPopular({ ...queryParams, page: currentPage })
@@ -94,7 +93,7 @@ const TvShow = () => {
                 {
                     position: 'absolute',
                     width: '100%',
-                    top: 0,
+                    top: Platform.OS == 'ios' ? 30 : 0,
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                     alignItems: 'center',
@@ -106,7 +105,7 @@ const TvShow = () => {
                     fontWeight: 'bold',
                     marginLeft: 10,
                     fontSize: 22
-                }}>Tv Shows</Text>
+                }}>Phim T.hình</Text>
                 <TouchableOpacity
                     style={{
                         backgroundColor: '#999999',

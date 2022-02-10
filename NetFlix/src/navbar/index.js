@@ -13,6 +13,7 @@ import MovieDetail from "../screen/MovieDetail";
 import TVDetail from "../screen/TVDetail";
 import TvShow from "../screen/TvShow";
 import Movies from "../screen/Movies";
+import ListMoviesByCategoryScreen from "../screen/ListMoviesByCategoryScreen";
 const Tab = createBottomTabNavigator();
 const AppStack = createNativeStackNavigator()
 
@@ -91,6 +92,10 @@ const MainStack = () => {
           headerShown: false,
         })} />
         <AppStack.Screen name = "Movies" component = {Movies}
+        options={({ route }) => ({
+          headerShown: false,
+        })} />
+         <AppStack.Screen name = "ListMoviesByCategory" component = {ListMoviesByCategoryScreen}
         options={({ route }) => ({
           headerShown: false,
         })} />

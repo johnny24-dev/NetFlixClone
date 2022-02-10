@@ -172,7 +172,7 @@ const NewAndHotScreen = () => {
           }}>
           <Image source={require('../assets/top-rated.png')}
             style={{ width: 35, height: 35 }} />
-          <Text style={[styles.txtChip, indexScrool == 2 && styles.hightLightTxt]}>Top 10</Text>
+          <Text style={[styles.txtChip, indexScrool == 2 && styles.hightLightTxt]}>Top 20</Text>
         </TouchableOpacity>
       </ScrollView>
       <ScrollView
@@ -182,7 +182,7 @@ const NewAndHotScreen = () => {
       >
         <UpComming list={data.upComming} />
         <NowAndTopMovie list={data.nowPlaying} find_dimesions={find_dimesion2} />
-        <NowAndTopMovie list={data.topRate} find_dimesions={find_dimesion3} />
+        <UpComming list={data.topRate} find_dimesions={find_dimesion3} top20={true}/>
       </ScrollView>
     </SafeAreaView>
   );

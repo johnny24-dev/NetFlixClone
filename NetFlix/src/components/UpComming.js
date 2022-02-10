@@ -7,7 +7,7 @@ import ProgressHUB from './ProgressHUB/ProgressHUB';
 
 
 
-const UpComming = ({ list, find_dimesions }) => {
+const UpComming = ({ list, find_dimesions, top20 }) => {
 
     const [progressVidiable, setProgressVisiable] = useState(true)
     useEffect(() => {
@@ -29,10 +29,14 @@ const UpComming = ({ list, find_dimesions }) => {
                             <TouchableOpacity key={`${index}+l`}
                                 onPress={() => navigate('MovieDetail', item)}
                                 style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                                {top20 ? 
+                                <View style = {{marginTop:20, marginRight:10}}>
+                                    <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 26 }}>{index+1 >= 10 ? index+1 : `0${index+1}`}</Text>
+                                </View> : 
                                 <View style={{ marginRight: 5, alignItems: 'center' }}>
-                                    <Text style={{ color: '#c9c9c9' }}>{`THG ${time?.getMonth()}`}</Text>
-                                    <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}>{time.getDate()}</Text>
-                                </View>
+                                <Text style={{ color: '#c9c9c9' }}>{`THG ${time?.getMonth()}`}</Text>
+                                <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}>{time.getDate() < 10 ? `0${time.getDate()}` : time.getDate()}</Text>
+                            </View>}
                                 <View style={{ marginBottom: 10, flex: 1 }}>
                                     <Image source={{ uri: `${BASE.BASE_URL_POSTER}${item?.backdrop_path}` }}
                                         containerStyle={styles.image}

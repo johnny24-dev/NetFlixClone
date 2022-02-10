@@ -12,7 +12,7 @@ const PosterMovie = ({ item, dandleInfo }) => {
     return (
         <View style={styles.container}>
             <Image
-                source={{ uri: `${BASE.BASE_URL_POSTER}${item?.poster_path ?? '/xF1uc2pEf34X2G41wvZaF5H0V7C.jpg'}` }}
+                source={{ uri: `${BASE.BASE_URL_POSTER}${item?.poster_path ?? '/kk0BT6UsdWELULlJ2qu2UjNqOHq.jpg'}` }}
                 containerStyle={styles.image}
                 PlaceholderContent={<ActivityIndicator color='red' size='large' />}
                 placeholderStyle={{ flex: 1, backgroundColor: 'white' }}
