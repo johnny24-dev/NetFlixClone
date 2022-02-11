@@ -1,20 +1,26 @@
 import {
   View, Text, TouchableOpacity,
   StyleSheet,
-  FlatList,
   SafeAreaView,
   Platform
 } from 'react-native';
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import * as BASE from '../api/base'
 import PosterMovie from '../components/PosterMovie';
-import { getListPopilarMovie, getListMovieTrending, getListTVPopular, getListTVTrending, getListDiscoverMovie, getLatestMovie } from '../api/Request'
-import { useDispatch } from 'react-redux';
+import { getListPopilarMovie, 
+  getListMovieTrending, 
+  getListTVPopular, 
+  getListTVTrending, 
+  getListDiscoverMovie, 
+  getLatestMovie, } from '../api/Request'
+import { useDispatch, useSelector } from 'react-redux';
 import { ACTIONS } from '../redux/action/moviesAction';
+import { ActionsAccount } from '../redux/action/accountAction'
 import { Image } from 'react-native-elements'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { navigate } from '../navbar/rootNavigation';
 import CategoryModal from '../components/CategoryModal';
+import {FlatList} from 'react-native-gesture-handler'
 
 const params = {
   api_key: BASE.API_KEY,
@@ -41,9 +47,11 @@ const HomeScreen = () => {
   const [showCategory, setShowCategory] = useState(false)
   const offsetScroll = useRef(0)
   const dispatch = useDispatch()
+  const sessionId = useSelector(state => state.authenReducer.sessionId)
 
   useEffect(() => {
     dispatch(ACTIONS.getListMoviesCategory())
+    dispatch(ActionsAccount.getDetail({ api_key: BASE.API_KEY, session_id: sessionId }))
 
     const fetchData = async (params) => {
       const response = await Promise.all([
@@ -191,7 +199,8 @@ const HomeScreen = () => {
               <TouchableOpacity style={{ marginRight: 10 }}>
                 <MaterialIcons name='cast' size={34} color='white' />
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity
+              onPress={()=>navigate('Profile')}>
                 <Image
                   source={require('../assets/profile.jpg')}
                   style={{ width: 29, height: 29, borderRadius: 8 }} />

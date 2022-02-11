@@ -1,6 +1,6 @@
 import {
     StyleSheet, Text, View,
-    SafeAreaView, FlatList, TouchableOpacity,
+    SafeAreaView, TouchableOpacity,
     ActivityIndicator,
     Platform
 } from 'react-native'
@@ -13,6 +13,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { goback } from '../navbar/rootNavigation'
 import CategoryModal from '../components/CategoryModal'
+import { FlatList } from 'react-native-gesture-handler';
 
 const queryParams = {
     api_key: BASE.API_KEY,

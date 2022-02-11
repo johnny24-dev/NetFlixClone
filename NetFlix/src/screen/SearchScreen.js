@@ -4,8 +4,6 @@ import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
-  View,
-  FlatList,
   TouchableOpacity
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,6 +11,7 @@ import * as BASE from '../api/base'
 import { ActionsSearch, TypeSearch } from '../redux/action/searchAction';
 import { SearchBar, Image } from 'react-native-elements'
 import { navigate } from '../navbar/rootNavigation';
+import { FlatList } from 'react-native-gesture-handler';
 
 const queryParams = {
   api_key: BASE.API_KEY,

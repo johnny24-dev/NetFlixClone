@@ -1,14 +1,17 @@
-import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, ScrollView, FlatList } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import { Image } from 'react-native-elements'
+import { Image, Rating, RatingProps, Button } from 'react-native-elements'
 import { goback, navigate, navigateReplace } from '../navbar/rootNavigation';
 import * as BASE from '../api/base'
-import { getListColections, getMovieDetail, getMovieRecomendation, getMovieVideo } from '../api/Request';
+import { getListColections, getMovieDetail, getMovieRecomendation, getMovieState, getMovieVideo, markAsFavorite, rateMovie } from '../api/Request';
 import YoutubePlayer from "react-native-youtube-iframe";
-import { Button } from 'react-native-elements/dist/buttons/Button';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import { useSelector } from 'react-redux';
+import { showAlert } from '../components/Alert';
+import { TYPE } from '../components/Alert/constants';
+import { ScrollView, FlatList } from 'react-native-gesture-handler';
 
 const queryParams = {
   api_key: BASE.API_KEY,
@@ -16,18 +19,24 @@ const queryParams = {
 }
 
 const displayRuntime = (runTime) => {
-  let hours = Math.trunc(runTime/60);
+  let hours = Math.trunc(runTime / 60);
   let minutes = runTime % 60;
-  return hours +"g"+ minutes+"p";
+  return hours + "g" + minutes + "p";
 }
 
 const MovieDetail = ({ route }) => {
-console.log("🚀 ~ file: MovieDetail.js ~ line 25 ~ MovieDetail ~ route", route)
+  console.log("🚀 ~ file: MovieDetail.js ~ line 25 ~ MovieDetail ~ route", route)
 
   const movieId = route?.params.id
   console.log("🚀 ~ file: MovieDetail.js ~ line 27 ~ MovieDetail ~ movieId", movieId)
   const [dataMovie, setDataMovie] = useState({});
   console.log("🚀 ~ file: MovieDetail.js ~ line 19 ~ MovieDetail ~ dataMovie", dataMovie)
+  const sessionId = useSelector(state => state.authenReducer.sessionId)
+  const accoutInfo = useSelector(state => state.accountReducer.info)
+  const [showRate, setShowRate] = useState(false)
+  const [rating, setRating] = useState(0)
+  const [favorited, setFavorited] = useState(false)
+  console.log("🚀 ~ file: MovieDetail.js ~ line 37 ~ MovieDetail ~ rating", rating)
 
   useEffect(() => {
     const fetchMovieDetail = async () => {
@@ -35,13 +44,49 @@ console.log("🚀 ~ file: MovieDetail.js ~ line 25 ~ MovieDetail ~ route", route
         getMovieDetail(movieId, queryParams),
         getMovieVideo(movieId, { ...queryParams, language: 'en' }),
         getMovieRecomendation(movieId, queryParams),
+        getMovieState(movieId, { api_key: BASE.API_KEY, session_id: sessionId })
       ])
       console.log("🚀 ~ file: MovieDetail.js ~ line 39 ~ fetchMovieDetail ~ response", response)
-      const data = { ...response[0].data, keyYoutube: response[1].data.results[0].key, recomended: response[2].data.results }
+      const data = {
+        ...response[0].data,
+        keyYoutube: response[1].data.results[0].key,
+        recomended: response[2].data.results,
+        state: response[3].data
+      }
       setDataMovie(data)
     }
     fetchMovieDetail()
   }, [movieId])
+
+  useEffect(() => {
+    if (dataMovie?.state?.rated) {
+      setRating(dataMovie?.state?.rated?.value)
+    }
+    if(dataMovie?.state?.favorite){
+      setFavorited(true)
+    }
+  }, [dataMovie?.state])
+
+  const ratingCompleted = async (rating) => {
+    const params = {
+      query: {
+        api_key: BASE.API_KEY,
+        session_id: sessionId
+      },
+      body: {
+        value: rating
+      }
+    }
+    const { error, data } = await rateMovie(movieId, params)
+    if (data) {
+      showAlert(TYPE.success, 'Success', 'Rating success!')
+      setRating(rating)
+    } else {
+      console.log('error rate:>>', error)
+      showAlert(TYPE.error, 'Error', 'Rating fail!')
+    }
+  }
+
 
   useEffect(() => {
     if (dataMovie?.belongs_to_collection?.id) {
@@ -52,6 +97,28 @@ console.log("🚀 ~ file: MovieDetail.js ~ line 25 ~ MovieDetail ~ route", route
       fetchColection()
     }
   }, [dataMovie?.belongs_to_collection?.id])
+
+  const handleFavorite = async () => {
+    const params = {
+      query: {
+        api_key: BASE.API_KEY,
+        session_id: sessionId
+      },
+      body: {
+        media_type: 'movie',
+        media_id: movieId,
+        favorite : !favorited
+      }
+    }
+    const {error, data} = await markAsFavorite(accoutInfo.id,params)
+    if (data) {
+      showAlert(TYPE.success, 'Success', 'Add list favorite success!')
+      setFavorited(!favorited)
+    } else {
+      console.log('error rate:>>', error)
+      showAlert(TYPE.error, 'Error', 'Add fail!')
+    }
+  }
 
 
 
@@ -158,8 +225,9 @@ console.log("🚀 ~ file: MovieDetail.js ~ line 25 ~ MovieDetail ~ route", route
           justifyContent: 'center',
         }}
           title='Phát'
-          icon={() => <MaterialIcons name='play-arrow' size={16} />}
-          titleStyle={{ color: 'black', fontSize: 12, fontWeight: '600', marginLeft: 5 }} />
+          icon={() => <MaterialIcons name='play-arrow' size={16} color='black' />}
+          titleStyle={{ color: 'black', fontSize: 12, fontWeight: '600', marginLeft: 5 }}
+          buttonStyle={{ backgroundColor: 'white', marginBottom: 5 }} />
         <Button style={{
           width: '100%',
           height: 35,
@@ -172,26 +240,39 @@ console.log("🚀 ~ file: MovieDetail.js ~ line 25 ~ MovieDetail ~ route", route
         }}
           title='Tải xuống'
           icon={() => <MaterialCommunityIcons name='arrow-collapse-down' size={16} color='white' />}
-          titleStyle={{ color: 'white', fontSize: 12, fontWeight: '600', marginLeft: 5 }} />
-          <View style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-around',
-                    width: '100%'
-                }}>
-                    <TouchableOpacity style={styles.btn}>
-                        <AntDesign name='plus' size={18} color='white' />
-                        <Text style={{ color: 'gray', fontSize:13 }}>Danh sách</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.btn}>
-                        <MaterialCommunityIcons name='vote' size={18} color='white' />
-                        <Text style={{ color: 'gray', fontSize:13 }}>Đánh giá</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.btn}>
-                        <MaterialCommunityIcons name='share' size={18} color='white' />
-                        <Text style={{ color: 'gray', fontSize:13 }}>Chia sẻ</Text>
-                    </TouchableOpacity>
-                </View>
+          titleStyle={{ color: 'white', fontSize: 12, fontWeight: '600', marginLeft: 5 }}
+          buttonStyle={{ backgroundColor: 'gray' }} />
+        <View style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-around',
+          width: '100%'
+        }}>
+          <TouchableOpacity style={styles.btn}
+          onPress={handleFavorite}>
+            <AntDesign name={favorited ? 'check' : 'plus'} size={18} color='white' />
+            <Text style={{ color: 'gray', fontSize: 13 }}>Danh sách</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.btn}
+            onPress={() => setShowRate(!showRate)}>
+            <MaterialCommunityIcons name='vote' size={18} color='white' />
+            <Text style={{ color: 'gray', fontSize: 13 }}>Đánh giá</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.btn}>
+            <MaterialCommunityIcons name='share' size={18} color='white' />
+            <Text style={{ color: 'gray', fontSize: 13 }}>Chia sẻ</Text>
+          </TouchableOpacity>
+        </View>
+        {showRate && <Rating
+          fractions={1}
+          tintColor='black'
+          ratingCount={10}
+          showRating
+          imageSize={28}
+          onFinishRating={ratingCompleted}
+          style={{ paddingVertical: 10 }}
+          startingValue={rating}
+        />}
         <Text style={{
           color: 'white',
           fontSize: 12,
@@ -274,7 +355,7 @@ console.log("🚀 ~ file: MovieDetail.js ~ line 25 ~ MovieDetail ~ route", route
             )
           }}
           horizontal />
-          <Text style={{
+        <Text style={{
           color: 'white',
           fontWeight: 'bold',
           fontSize: 16,
@@ -313,5 +394,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 80,
     height: 60
-},
+  },
 });

@@ -32,6 +32,7 @@ export const createSessionId = (params) => {
 }
 
 export const deleteSessionId = (params) => {
+console.log("🚀 ~ file: Request.js ~ line 35 ~ deleteSessionId ~ params", params)
     return processResponse(NAxios.delete(`${Urls.URL_DELETE_SESSION_ID}${buildGetParams(params.apiKey)}`,{data:params.body}))
 }
 
@@ -77,6 +78,14 @@ export const getListMovieTopRate = (params) => {
     return processResponse(NAxios.get(`${Urls.URL_MOVIE_TOP_RATE}${buildGetParams(params)}`))
 }
 
+export const getMovieState = (idMovie, params) => {
+    return processResponse(NAxios.get(`${Urls.URL_MOVIE_SATE(idMovie)}${buildGetParams(params)}`))
+}
+
+export const rateMovie = (idMovie, params) => {
+    return processResponse(NAxios.post(`${Urls.URL_MOVIE_RATE(idMovie)}${buildGetParams(params.query)}`,params.body))
+}
+
 //TV
 
 export const getListTVPopular = (params) => {
@@ -103,6 +112,14 @@ export const getTvRecomendation = (tvId, params) => {
     return processResponse(NAxios.get(`${Urls.URL_TV_RECOMENDATION(tvId)}${buildGetParams(params)}`))
 }
 
+export const getTvState = (idTv, params) => {
+    return processResponse(NAxios.get(`${Urls.URL_TV_STATE(idTv)}${buildGetParams(params)}`))
+}
+
+export const rateTv = (idTv, params) => {
+    return processResponse(NAxios.post(`${Urls.URL_TV_RATE(idTv)}${buildGetParams(params.query)}`,params.body))
+}
+
 // colection
 
 export const getListColections = (colectionId, params) => {
@@ -119,6 +136,16 @@ export const getListTvSearch = (params) =>{
     return processResponse(NAxios.get(`${Urls.URL_SEARCH_TV}${buildGetParams(params)}`))
 }
 
+
+// account
+
+export const getAccountDetail = (params) => {
+    return processResponse(NAxios.get(`${Urls.URL_ACCOUNT_DETAIL}${buildGetParams(params)}`))
+}
+
+export const markAsFavorite = (accountId, params) => {
+    return processResponse(NAxios.post(`${Urls.URL_MARK_AS_FAVORITE(accountId)}${buildGetParams(params.query)}`,params.body))
+}
 
 
 

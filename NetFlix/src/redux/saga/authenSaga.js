@@ -51,7 +51,7 @@ function* login(action) {
                 storeData(KEY_ASYNStORAGE.SESSION_ID, data.session_id)
                 yield put(ACTIONS.sessionIdSuccess(data))
                 yield call(getMovieCategory,)
-                navigate('Tabs');
+                navigateReplace('Tabs')
             } else {
                 showAlert(TYPE.ERROR, 'ERROR', 'Có lỗi xảy ra!')
             }

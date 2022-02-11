@@ -2,14 +2,13 @@ import {
     Modal, StyleSheet,
     Text,
     View,
-    FlatList,
     TouchableOpacity,
-    SafeAreaView
 } from 'react-native'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { navigate, navigateReplace } from '../navbar/rootNavigation'
+import { FlatList } from 'react-native-gesture-handler';
 
 
 const CategoryModal = ({ visiableCategory, handleClose, fromScreen }) => {
@@ -37,6 +36,7 @@ const CategoryModal = ({ visiableCategory, handleClose, fromScreen }) => {
                                 style={{ marginBottom: 20 }}
                                 onPress={() => {
                                     if(fromScreen != 'ListMoviesByCategory'){
+                                        handleClose()
                                         navigate('ListMoviesByCategory', item)
                                     }else{
                                         navigateReplace('ListMoviesByCategory', item)

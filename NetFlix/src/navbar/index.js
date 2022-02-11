@@ -2,20 +2,23 @@ import React from "react";
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from "react-native-vector-icons/Ionicons"
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 import HomeScreen from "../screen/HomeScreen";
 import NewAndHotScreen from "../screen/NewAndHotScreen";
 import SearchScreen from "../screen/SearchScreen";
 import Login from '../screen/auth/Login'
-import { navigationRef } from "./rootNavigation";
+import { goback, navigationRef } from "./rootNavigation";
 import SplashScreen from "../screen/SplashScreen";
 import MovieDetail from "../screen/MovieDetail";
 import TVDetail from "../screen/TVDetail";
 import TvShow from "../screen/TvShow";
 import Movies from "../screen/Movies";
 import ListMoviesByCategoryScreen from "../screen/ListMoviesByCategoryScreen";
+import ProfileScreen from "../screen/ProfileScreen";
+
+
 const Tab = createBottomTabNavigator();
-const AppStack = createNativeStackNavigator()
+const AppStack = createStackNavigator()
 
 const TabNavigator = () => {
   return (
@@ -46,13 +49,13 @@ const TabNavigator = () => {
         options={({ route }) => ({
           headerTitle: "Trang chủ",
           tabBarLabel: 'Trang chủ',
-          headerShown:false
+          headerShown: false
         })} />
       <Tab.Screen name="New And Hots" component={NewAndHotScreen}
         options={({ route }) => ({
           headerTitle: "Mới & Hot",
           tabBarLabel: 'Mới & Hot',
-          headerShown:false
+          headerShown: false
         })} />
       <Tab.Screen name="Searchs" component={SearchScreen}
         options={({ route }) => ({
@@ -65,40 +68,58 @@ const TabNavigator = () => {
 
 const MainStack = () => {
   return (
-    <NavigationContainer ref={navigationRef}>
-      <AppStack.Navigator>
-      <AppStack.Screen name = "Splash" component = {SplashScreen}
-        options={({ route }) => ({
-          headerShown: false,
-        })} />
-      <AppStack.Screen name = "Login" component = {Login}
-        options={({ route }) => ({
-          headerShown: false,
-        })} />
-        <AppStack.Screen name = "Tabs" component = {TabNavigator}
-        options={({ route }) => ({
-          headerShown: false,
-        })} />
-        <AppStack.Screen name = "MovieDetail" component = {MovieDetail}
-        options={({ route }) => ({
-          headerShown: false,
-        })} />
-        <AppStack.Screen name = "TVDetail" component = {TVDetail}
-        options={({ route }) => ({
-          headerShown: false,
-        })} />
-        <AppStack.Screen name = "TvShow" component = {TvShow}
-        options={({ route }) => ({
-          headerShown: false,
-        })} />
-        <AppStack.Screen name = "Movies" component = {Movies}
-        options={({ route }) => ({
-          headerShown: false,
-        })} />
-         <AppStack.Screen name = "ListMoviesByCategory" component = {ListMoviesByCategoryScreen}
-        options={({ route }) => ({
-          headerShown: false,
-        })} />
+    <NavigationContainer
+      ref={navigationRef}>
+      <AppStack.Navigator
+        screenOptions={{
+          // gestureEnabled: true,
+          // gestureDirection: 'horizontal',
+          // cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+        }}>
+        <AppStack.Screen name="Splash" component={SplashScreen}
+          options={({ route }) => ({
+            headerShown: false,
+          })} />
+        <AppStack.Screen name="Login" component={Login}
+          options={({ route }) => ({
+            headerShown: false,
+          })} />
+        <AppStack.Screen name="Tabs" component={TabNavigator}
+          options={({ route }) => ({
+            headerShown: false,
+          })} />
+        <AppStack.Screen name="MovieDetail" component={MovieDetail}
+          options={({ route }) => ({
+            headerShown: false,
+          })} />
+        <AppStack.Screen name="TVDetail" component={TVDetail}
+          options={({ route }) => ({
+            headerShown: false,
+          })} />
+        <AppStack.Screen name="TvShow" component={TvShow}
+          options={({ route }) => ({
+            headerShown: false,
+          })} />
+        <AppStack.Screen name="Movies" component={Movies}
+          options={({ route }) => ({
+            headerShown: false,
+          })} />
+        <AppStack.Screen name="ListMoviesByCategory" component={ListMoviesByCategoryScreen}
+          options={({ route }) => ({
+            headerShown: false,
+          })} />
+        <AppStack.Screen name="Profile" component={ProfileScreen}
+          options={({ route }) => ({
+            headerStyle: {
+              backgroundColor: 'black'
+            },
+            headerTitleStyle: {
+              color: 'white'
+            },
+            headerTintColor: 'white',
+            headerBackTitle: null,
+            headerTitleAlign: 'center',
+          })} />
       </AppStack.Navigator>
     </NavigationContainer>
   )

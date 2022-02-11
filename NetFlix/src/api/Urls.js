@@ -22,6 +22,10 @@ export const URL_TV_POPULAR = '/tv/popular'
 export const URL_TV_TRENDING = '/trending/tv/week'
 export const URL_SEARCH_TV = '/search/tv'
 
+
+// account
+export const URL_ACCOUNT_DETAIL = '/account'
+
 export default {
    URL_REQUEST_TOKEN,
    URL_VALIDATE_LOGIN,
@@ -46,4 +50,10 @@ export default {
    URL_MOVIE_TOP_RATE,
    URL_SEARCH_MOVIE,
    URL_SEARCH_TV,
+   URL_ACCOUNT_DETAIL,
+   URL_MOVIE_SATE :(idMovie) => (`/movie/${idMovie}/account_states`),
+   URL_MOVIE_RATE :(idMovie) => (`/movie/${idMovie}/rating`),
+   URL_TV_STATE : (idTv) => (`/tv/${idTv}/account_states`),
+   URL_TV_RATE : (idTv) => (`/tv/${idTv}/rating`),
+   URL_MARK_AS_FAVORITE : (account_id) => (`/account/${account_id}/favorite`),
 }

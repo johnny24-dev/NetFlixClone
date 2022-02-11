@@ -1,14 +1,25 @@
-import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, ScrollView, FlatList } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import { Image } from 'react-native-elements'
+import { Image, Button, Rating } from 'react-native-elements'
 import { goback, navigate, navigateReplace } from '../navbar/rootNavigation';
 import * as BASE from '../api/base'
-import { getListColections, getMovieDetail, getMovieRecomendation, getMovieVideo, getTVDetail, getTvRecomendation, getTvVideo } from '../api/Request';
+import {
+  getListColections,
+  getTVDetail,
+  getTvRecomendation,
+  getTvState,
+  getTvVideo,
+  rateTv,
+  markAsFavorite
+} from '../api/Request';
 import YoutubePlayer from "react-native-youtube-iframe";
-import { Button } from 'react-native-elements/dist/buttons/Button';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import { useSelector } from 'react-redux';
+import { showAlert } from '../components/Alert';
+import { TYPE } from '../components/Alert/constants';
+import { ScrollView, FlatList } from 'react-native-gesture-handler';
 
 const queryParams = {
   api_key: BASE.API_KEY,
@@ -26,6 +37,11 @@ const TVDetail = ({ route }) => {
   const tvId = route?.params.id
   const [dataTv, setDataTv] = useState({});
   console.log("🚀 ~ file: TVDetail.js ~ line 22 ~ TVDetail ~ dataTv", dataTv)
+  const sessionId = useSelector(state => state.authenReducer.sessionId)
+  const accoutInfo = useSelector(state => state.accountReducer.info)
+  const [showRate, setShowRate] = useState(false)
+  const [favorited, setFavorited] = useState(false)
+  const [rating, setRating] = useState(0)
 
   useEffect(() => {
     const fetchTvDetail = async () => {
@@ -33,16 +49,27 @@ const TVDetail = ({ route }) => {
         getTVDetail(tvId, queryParams),
         getTvVideo(tvId, { ...queryParams, language: 'en' }),
         getTvRecomendation(tvId, queryParams),
+        getTvState(tvId, { api_key: BASE.API_KEY, session_id: sessionId })
       ])
       const data = {
         ...response[0].data,
         keyYoutube: response[1].data.results[0].key,
-        recomended: response[2].data.results
+        recomended: response[2].data.results,
+        state: response[3].data
       }
       setDataTv(data)
     }
     fetchTvDetail()
   }, [tvId])
+
+  useEffect(() => {
+    if (dataTv?.state?.rated) {
+      setRating(dataTv?.state?.rated?.value)
+    }
+    if (dataTv?.state?.favorite) {
+      setFavorited(true)
+    }
+  }, [dataTv?.state])
 
   useEffect(() => {
     if (dataTv?.belongs_to_collection?.id) {
@@ -53,6 +80,48 @@ const TVDetail = ({ route }) => {
       fetchColection()
     }
   }, [dataTv?.belongs_to_collection?.id])
+
+  const ratingCompleted = async (rating) => {
+    const params = {
+      query: {
+        api_key: BASE.API_KEY,
+        session_id: sessionId
+      },
+      body: {
+        value: rating
+      }
+    }
+    const { error, data } = await rateTv(tvId, params)
+    if (data) {
+      showAlert(TYPE.success, 'Success', 'Rating success!')
+      setRating(rating)
+    } else {
+      console.log('error rate:>>', error)
+      showAlert(TYPE.error, 'Error', 'Rating fail!')
+    }
+  }
+
+  const handleFavorite = async () => {
+    const params = {
+      query: {
+        api_key: BASE.API_KEY,
+        session_id: sessionId
+      },
+      body: {
+        media_type: 'tv',
+        media_id: tvId,
+        favorite: !favorited
+      }
+    }
+    const { error, data } = await markAsFavorite(accoutInfo.id, params)
+    if (data) {
+      showAlert(TYPE.success, 'Success', 'Add list favorite success!')
+      setFavorited(!favorited)
+    } else {
+      console.log('error rate:>>', error)
+      showAlert(TYPE.error, 'Error', 'Add fail!')
+    }
+  }
 
 
 
@@ -159,32 +228,36 @@ const TVDetail = ({ route }) => {
           justifyContent: 'center',
         }}
           title='Phát'
-          icon={() => <MaterialIcons name='play-arrow' size={16} />}
-          titleStyle={{ color: 'black', fontSize: 12, fontWeight: '600', marginLeft: 5 }} />
+          icon={() => <MaterialIcons name='play-arrow' size={16} color='black' />}
+          titleStyle={{ color: 'black', fontSize: 12, fontWeight: '600', marginLeft: 5 }}
+          buttonStyle={{ backgroundColor: 'white', marginBottom: 5 }} />
         <Button style={{
           width: '100%',
           height: 35,
-          backgroundColor: 'gray',
           marginTop: 5,
           borderRadius: 8,
           padding: 0,
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          backgroundColor: 'gray'
         }}
           title='Tải xuống'
           icon={() => <MaterialCommunityIcons name='arrow-collapse-down' size={16} color='white' />}
-          titleStyle={{ color: 'white', fontSize: 12, fontWeight: '600', marginLeft: 5 }} />
+          titleStyle={{ color: 'white', fontSize: 12, fontWeight: '600', marginLeft: 5 }}
+          buttonStyle={{ backgroundColor: 'gray' }} />
         <View style={{
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'space-around',
           width: '100%'
         }}>
-          <TouchableOpacity style={styles.btn}>
-            <AntDesign name='plus' size={18} color='white' />
+          <TouchableOpacity style={styles.btn}
+            onPress={handleFavorite}>
+            <AntDesign name={favorited ? 'check' : 'plus'} size={18} color='white' />
             <Text style={{ color: 'gray', fontSize: 13 }}>Danh sách</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.btn}>
+          <TouchableOpacity style={styles.btn}
+            onPress={() => setShowRate(!showRate)}>
             <MaterialCommunityIcons name='vote' size={18} color='white' />
             <Text style={{ color: 'gray', fontSize: 13 }}>Đánh giá</Text>
           </TouchableOpacity>
@@ -193,6 +266,16 @@ const TVDetail = ({ route }) => {
             <Text style={{ color: 'gray', fontSize: 13 }}>Chia sẻ</Text>
           </TouchableOpacity>
         </View>
+        {showRate && <Rating
+          fractions={1}
+          tintColor='black'
+          ratingCount={10}
+          showRating
+          imageSize={36}
+          onFinishRating={ratingCompleted}
+          style={{ paddingVertical: 10 }}
+          startingValue={rating}
+        />}
         <Text style={{
           color: 'white',
           fontSize: 12,
@@ -263,7 +346,7 @@ const TVDetail = ({ route }) => {
             return (
               <View
                 style={{ paddingRight: 5, paddingVertical: 10 }}
-               >
+              >
                 <Image
                   source={{ uri: BASE.BASE_URL_IMAGE + item.poster_path }}
                   containerStyle={{ height: 150, width: 100, borderRadius: 8, }}

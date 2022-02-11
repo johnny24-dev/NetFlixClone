@@ -1,6 +1,6 @@
 import {
     StyleSheet, Text, View,
-    SafeAreaView, FlatList, TouchableOpacity,
+    SafeAreaView, TouchableOpacity,
     ActivityIndicator,
     Platform
 } from 'react-native'
@@ -11,6 +11,8 @@ import { getListTVPopular } from '../api/Request'
 import { Image } from 'react-native-elements'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { goback } from '../navbar/rootNavigation'
+import { FlatList } from 'react-native-gesture-handler';
+
 
 const queryParams = {
     api_key: BASE.API_KEY,

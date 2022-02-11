@@ -1,6 +1,6 @@
 import {
   StyleSheet, Button, View, Alert,
-  SafeAreaView, Image, TouchableOpacity, Text, ScrollView, ActivityIndicator,
+  SafeAreaView, Image, TouchableOpacity, Text
 } from 'react-native';
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
@@ -9,7 +9,8 @@ import { getListMovieNowPlaying, getListMovieTopRate, getListMovieUpComing } fro
 import { useSelector } from 'react-redux';
 import UpComming from '../components/UpComming';
 import NowAndTopMovie from '../components/NowAndTopMovie';
-import { hideAlert, showAlert, TYPE } from '../components/Alert'
+import { ScrollView } from 'react-native-gesture-handler';
+
 
 const queryParams = {
   api_key: BASE.API_KEY,

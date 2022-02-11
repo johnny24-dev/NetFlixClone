@@ -11,10 +11,10 @@ import { Provider } from 'react-redux';
 import TabNavigator from './src/navbar';
 import store from './src/redux/store/store';
 import {Alert} from './src/components/Alert'
-import { StatusBar } from 'react-native';
+import { StatusBar, LogBox } from 'react-native';
 
 const App = () => {
-
+  LogBox.ignoreAllLogs();
   return (
     <Provider store={store}>
       <StatusBar hidden/>
