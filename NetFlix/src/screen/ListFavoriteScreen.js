@@ -25,13 +25,11 @@ const ListFavoriteScreen = ({ route }) => {
 
     const sessionId = useSelector(state => state.authenReducer.sessionId)
     const accoutInfo = useSelector(state => state.accountReducer.info)
-
     const [dataSource, setDataSource] = useState([])
     const [currentPage, setCurentPage] = useState(1)
-    const [showLoadmore, setShowLoadmore] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
 
     const fetchData = async () => {
-        setShowLoadmore(false)
         const queryParamsFavorite = {
             api_key: BASE.API_KEY,
             session_id: sessionId,
@@ -43,9 +41,15 @@ const ListFavoriteScreen = ({ route }) => {
         if (fromScreen == 'movies') {
             const { error, data } = await getListMoviesFavotite(accoutInfo.id, { ...queryParamsFavorite, page: currentPage })
             setDataSource([...dataSource, ...data.results])
+            if(currentPage >= data.total_pages){
+                setIsLoading(false)
+            }
         } else {
             const { error, data } = await getListTvFavorite(accoutInfo.id, { ...queryParamsFavorite, page: currentPage })
             setDataSource([...dataSource, ...data.results])
+            if(currentPage >= data.total_pages){
+                setIsLoading(false)
+            }
         }
 
     }
@@ -55,14 +59,14 @@ const ListFavoriteScreen = ({ route }) => {
     }, [currentPage])
 
     const loadMoreItem = () => {
-        setShowLoadmore(true)
+      
         setCurentPage(currentPage + 1)
     }
 
     const renderLoader = () => {
         return (
             <>
-                {showLoadmore && <View style={{
+              {isLoading &&  <View style={{
                     marginVertical: 16,
                     alignItems: 'center'
                 }}>
