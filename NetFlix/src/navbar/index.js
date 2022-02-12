@@ -15,6 +15,7 @@ import TvShow from "../screen/TvShow";
 import Movies from "../screen/Movies";
 import ListMoviesByCategoryScreen from "../screen/ListMoviesByCategoryScreen";
 import ProfileScreen from "../screen/ProfileScreen";
+import ListFavoriteScreen from "../screen/ListFavoriteScreen";
 
 
 const Tab = createBottomTabNavigator();
@@ -119,6 +120,10 @@ const MainStack = () => {
             headerTintColor: 'white',
             headerBackTitle: null,
             headerTitleAlign: 'center',
+          })} />
+          <AppStack.Screen name="ListFavorite" component={ListFavoriteScreen}
+          options={({ route }) => ({
+            headerShown: false,
           })} />
       </AppStack.Navigator>
     </NavigationContainer>

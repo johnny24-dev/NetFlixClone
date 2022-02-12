@@ -112,7 +112,11 @@ const MovieDetail = ({ route }) => {
     }
     const {error, data} = await markAsFavorite(accoutInfo.id,params)
     if (data) {
-      showAlert(TYPE.success, 'Success', 'Add list favorite success!')
+      if(!favorited){
+        showAlert(TYPE.success, 'Success', 'Add list favorite success!')
+      }else {
+        showAlert(TYPE.success, 'Success', 'Removed movie from list favorite success!')
+      }
       setFavorited(!favorited)
     } else {
       console.log('error rate:>>', error)

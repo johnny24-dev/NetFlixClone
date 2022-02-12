@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import UpComming from '../components/UpComming';
 import NowAndTopMovie from '../components/NowAndTopMovie';
 import { ScrollView } from 'react-native-gesture-handler';
+import { navigate } from '../navbar/rootNavigation';
 
 
 const queryParams = {
@@ -27,6 +28,7 @@ const NewAndHotScreen = () => {
   const scrollHorizontal = useRef(null)
   const [currentOffset, setCurrentOffset] = useState(0)
   const [indexScrool, setIndexScrool] = useState(0)
+  console.log("🚀 ~ file: NewAndHotScreen.js ~ line 31 ~ NewAndHotScreen ~ indexScrool", indexScrool)
 
   const [offsetNowPlaying, setOffsetNowPlaying] = useState(0)
   const [offsetTop, setOffsetTop] = useState(0)
@@ -134,7 +136,8 @@ const NewAndHotScreen = () => {
           <TouchableOpacity style={{ marginRight: 10 }}>
             <MaterialIcons name='cast' size={34} color='white' />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity
+          onPress={() => navigate('Profile')}>
             <Image
               source={require('../assets/profile.jpg')}
               style={{ width: 29, height: 29, borderRadius: 8 }} />
@@ -146,7 +149,6 @@ const NewAndHotScreen = () => {
         showsHorizontalScrollIndicator={false}>
         <TouchableOpacity style={[styles.chip, indexScrool == 0 && styles.hightLightBtn]}
           onPress={() => {
-            setIndexScrool(0)
             scrollRef.current?.scrollTo({ x: 0, y: 0, animated: true })
           }}>
           <Image source={require('../assets/popcorn.png')}
@@ -154,10 +156,11 @@ const NewAndHotScreen = () => {
           <Text style={[styles.txtChip, indexScrool == 0 && styles.hightLightTxt]}>Sắp ra mắt</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.chip, indexScrool == 1 && styles.hightLightBtn]}
-          onPress={() => {
-            setIndexScrool(1)
-            scrollHorizontal.current?.scrollTo({ x: 200, y: 0, animated: true })
+          onPress={() => { 
             scrollRef.current?.scrollTo({ x: 0, y: offsetNowPlaying, animated: true })
+            setTimeout(()=>{
+              scrollHorizontal.current?.scrollTo({ x: 200, y: 0, animated: true })
+            },480)
           }
           }>
           <Image source={require('../assets/flames.png')}
@@ -166,10 +169,10 @@ const NewAndHotScreen = () => {
         </TouchableOpacity>
         <TouchableOpacity style={[styles.chip, indexScrool == 2 && styles.hightLightBtn]}
           onPress={() => {
-            setIndexScrool(2)
-            scrollHorizontal.current.scrollToEnd({ animated: true })
             scrollRef.current?.scrollTo({ x: 0, y: offsetTop, animated: true })
-            
+            setTimeout(()=>{
+              scrollHorizontal?.current.scrollToEnd({ animated: true })
+            },600)
           }}>
           <Image source={require('../assets/top-rated.png')}
             style={{ width: 35, height: 35 }} />
@@ -177,6 +180,7 @@ const NewAndHotScreen = () => {
         </TouchableOpacity>
       </ScrollView>
       <ScrollView
+        waitFor={scrollHorizontal}
         onScroll={handleScroll}
         ref={scrollRef}
         style={{ marginTop: 10 }}

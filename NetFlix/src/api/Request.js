@@ -147,6 +147,14 @@ export const markAsFavorite = (accountId, params) => {
     return processResponse(NAxios.post(`${Urls.URL_MARK_AS_FAVORITE(accountId)}${buildGetParams(params.query)}`,params.body))
 }
 
+export const getListMoviesFavotite = (accountId,params) => {
+    return processResponse(NAxios.get(`${Urls.URL_LIST_MOVIES_FAVORITE(accountId)}${buildGetParams(params)}`))
+}
+
+export const getListTvFavorite = (accountId, params) => {
+    return processResponse(NAxios.get(`${Urls.URL_LIST_TV_FAVORITE(accountId)}${buildGetParams(params)}`))
+}
+
 
 
 

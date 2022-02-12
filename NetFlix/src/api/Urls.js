@@ -56,4 +56,6 @@ export default {
    URL_TV_STATE : (idTv) => (`/tv/${idTv}/account_states`),
    URL_TV_RATE : (idTv) => (`/tv/${idTv}/rating`),
    URL_MARK_AS_FAVORITE : (account_id) => (`/account/${account_id}/favorite`),
+   URL_LIST_MOVIES_FAVORITE : (account_id) => (`/account/${account_id}/favorite/movies`),
+   URL_LIST_TV_FAVORITE : (account_id) => (`/account/${account_id}/favorite/tv`),
 }

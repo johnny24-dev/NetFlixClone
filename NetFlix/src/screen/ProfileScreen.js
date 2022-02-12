@@ -6,6 +6,7 @@ import { ACTIONS } from '../redux/action/authenAction'
 import * as BASE from '../api/base'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Fontisto from 'react-native-vector-icons/Fontisto'
+import { navigate } from '../navbar/rootNavigation'
 
 const ProfileScreen = () => {
 
@@ -14,6 +15,7 @@ const ProfileScreen = () => {
     const accoutInfo = useSelector(state => state.accountReducer.info)
     console.log("🚀 ~ file: ProfileScreen.js ~ line 13 ~ ProfileScreen ~ accoutInfo", accoutInfo)
     const dispatch = useDispatch()
+
     const logoutParams = {
         apiKey: {
             api_key: BASE.API_KEY
@@ -23,18 +25,19 @@ const ProfileScreen = () => {
         }
     }
 
+  
     return (
         <View style={{ paddingHorizontal: 16, flex: 1, backgroundColor: 'black' }}>
             <View style={{
                 flexDirection: 'row',
                 //justifyContent: 'center',
-                marginVertical:20,
+                marginVertical: 20,
                 alignItems: 'center'
             }}>
                 <Avatar
                     size={128}
-                    rounded
-                    source={require('../assets/profile.jpg')} />
+                    source={require('../assets/profile.jpg')}
+                    avatarStyle={{ borderRadius: 20 }} />
                 <View style={{ marginLeft: 10 }}>
                     <Text style={styles.txt}>ID: <Text style={styles.txtDetail}>{accoutInfo?.id}</Text></Text>
                     <Text style={styles.txt}>Name: <Text style={styles.txtDetail}>{accoutInfo?.name ?? 'unknow'}</Text></Text>
@@ -53,13 +56,14 @@ const ProfileScreen = () => {
                     backgroundColor: '#212121',
                     padding: 20,
                     marginBottom: 10
-                }}>
+                }}
+                onPress={() => navigate('ListFavorite', 'movies')}>
                     <View style={{
                         flexDirection: 'row',
                         alignItems: 'center',
                     }}>
-                        <Fontisto name='film' color='white' size={28}/>
-                        <Text style={{ color: 'white', fontSize: 18, marginLeft:10 }}>Danh sách Phim</Text>
+                        <Fontisto name='film' color='white' size={28} />
+                        <Text style={{ color: 'white', fontSize: 18, marginLeft: 10 }}>Danh sách Phim yêu thích</Text>
                     </View>
                     <Ionicons name='chevron-forward' color='gray' size={28} />
                 </TouchableOpacity>
@@ -70,13 +74,15 @@ const ProfileScreen = () => {
                     backgroundColor: '#212121',
                     padding: 20,
                     marginBottom: 10
-                }}>
+                }}
+                onPress={() => navigate('ListFavorite')}
+               >
                     <View style={{
                         flexDirection: 'row',
                         alignItems: 'center',
                     }}>
-                        <Ionicons name='ios-tv-outline' color='white' size={28}/>
-                        <Text style={{ color: 'white', fontSize: 18, marginLeft:10 }}>Danh sách Tv shows</Text>
+                        <Ionicons name='ios-tv-outline' color='white' size={28} />
+                        <Text style={{ color: 'white', fontSize: 18, marginLeft: 10 }}>Danh sách Tv shows yêu thích</Text>
                     </View>
                     <Ionicons name='chevron-forward' color='gray' size={28} />
                 </TouchableOpacity>
