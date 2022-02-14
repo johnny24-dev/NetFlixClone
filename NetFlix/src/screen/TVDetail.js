@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, Share } from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { Image, Button, Rating } from 'react-native-elements'
@@ -126,6 +126,32 @@ const TVDetail = ({ route }) => {
       showAlert(TYPE.error, 'Error', 'Add fail!')
     }
   }
+
+
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        message:
+          `Chia sẻ Tv show yêu thích ${dataTv.title} đến mọi người!!!, link : https://www.youtube.com/watch?v=${dataTv.keyYoutube}`,
+        title:'Share the Tv show'
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+          console.log('shared 1')
+        } else {
+          // shared
+          console.log('shared 2')
+        }
+      } else if (result.action === Share.dismissedAction) {
+        console.log('dismissed share')
+        // dismissed
+      }
+    } catch (error) {
+     showAlert(TYPE.error,'ERROR',error.message)
+    }
+  };
+
 
 
 
@@ -265,7 +291,8 @@ const TVDetail = ({ route }) => {
             <MaterialCommunityIcons name='vote' size={18} color='white' />
             <Text style={{ color: 'gray', fontSize: 13 }}>Đánh giá</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.btn}>
+          <TouchableOpacity style={styles.btn}
+          onPress={() => onShare()}>
             <MaterialCommunityIcons name='share' size={18} color='white' />
             <Text style={{ color: 'gray', fontSize: 13 }}>Chia sẻ</Text>
           </TouchableOpacity>

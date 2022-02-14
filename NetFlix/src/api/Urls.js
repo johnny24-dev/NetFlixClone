@@ -9,7 +9,7 @@ export const URL_DELETE_SESSION_ID = '/authentication/session'
 export const URL_MOVIES_POPULAR = '/movie/popular'
 export const URL_MOVIES_UPCOMMING ='/movie/upcoming'
 export const URL_LATEST_MOVIE = '/movie/latest'
-export const URL_MOVIE_TRENDING = '/trending/movie/week'
+export const URL_MOVIE_TRENDING = '/trending/movie/day'
 export const URL_CATEGORY_MOVIE = '/genre/movie/list'
 export const URL_DISCOVER_MOVIE = '/discover/movie'
 export const URL_MOVIE_NOW_PLAYING = '/movie/now_playing'
@@ -19,7 +19,7 @@ export const URL_SEARCH_MOVIE = '/search/movie'
 //TV shows
 
 export const URL_TV_POPULAR = '/tv/popular'
-export const URL_TV_TRENDING = '/trending/tv/week'
+export const URL_TV_TRENDING = '/trending/tv/day'
 export const URL_SEARCH_TV = '/search/tv'
 
 
