@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, Share } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, Share, Alert, PermissionsAndroid } from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { Image, Button, Rating } from 'react-native-elements'
@@ -20,6 +20,10 @@ import { useSelector } from 'react-redux';
 import { showAlert } from '../components/Alert';
 import { TYPE } from '../components/Alert/constants';
 import { ScrollView, FlatList } from 'react-native-gesture-handler';
+import ytdl from "react-native-ytdl"
+import RNFetchBlob from 'rn-fetch-blob';
+import FileViewer from "react-native-file-viewer";
+
 
 const queryParams = {
   api_key: BASE.API_KEY,
@@ -153,6 +157,111 @@ const TVDetail = ({ route }) => {
   };
 
 
+  const downloadURLsToFile = (URLs, path, progressCallback) => {
+    return new Promise(async (resolve, reject) => {
+
+      for (let i = 0; i < URLs.length; i++) {
+        let { url, headers } = URLs[i];
+
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+            {
+              title: 'Storage Permission',
+              message: 'App needs access to external storage to download the file',
+            }
+          );
+
+          if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+            Alert.alert(
+              'Permission Denied!',
+              'You need to give storage permission to download the file'
+            );
+            return;
+          }
+
+          //Alert.alert('Permission granted', 'Permission has been granted!');
+
+          const fileAlreadyExists = await RNFetchBlob.fs.exists(path);
+          if (fileAlreadyExists) {
+            await RNFetchBlob.fs.unlink(path);
+          }
+
+          const res = await RNFetchBlob.config({
+            path,
+            overwrite: false,
+          //   addAndroidDownloads : {
+          //     useDownloadManager : true, // <-- this is the only thing required
+          //     // Optional, override notification setting (default to true)
+          //     notification : false,
+          //     title : dataMovie.original_title,
+          //     // Optional, but recommended since android DownloadManager will fail when
+          //     // the url does not contains a file extension, by default the mime type will be text/plain
+          //     mime : 'video',
+          //     //description : 'File downloaded by download manager.'
+          // }
+          }).fetch('GET', url, headers)
+            .progress((received, total) => {
+              if (progressCallback) {
+                progressCallback((received * (i + 1)) / (total * URLs.length));
+              }
+            })
+            .catch(err => console.error(`Could not save:"${path}" Reason:`, err));
+
+          const contentType = res.respInfo.headers['Content-Type'];
+          if (contentType) {
+            const extension = contentType.split('/')[1];
+            path = `${path}.${extension}`;
+            await RNFetchBlob.fs.mv(res.path(), path);
+          }
+          console.log('The file is saved to:', path);
+          showAlert(TYPE.success,'Success', 'Tải xuống hoàn tất!')
+
+          await FileViewer.open(path, { showOpenWithDialog: true }) // absolute-path-to-my-local-file.
+                .then(() => {
+                  // success
+                  console.log('success')
+                })
+                .catch((error) => {
+                  // error
+                })
+
+        } catch (e) {
+          console.error(e);
+          reject(e);
+        }
+
+      }
+      resolve(path);
+
+    });
+  }
+
+  const downloadedFile = async () => {
+    const youtubeURL = `http://www.youtube.com/watch?v=${dataTv.keyYoutube}`;
+    const urls = await ytdl(youtubeURL, { filter: format => format.container === 'mp4' });
+    const path = RNFetchBlob.fs.dirs.DownloadDir + `/${dataTv.original_title}`;
+    console.log("🚀 ~ file: MovieDetail.js ~ line 218 ~ downloadedFile ~ path", path)
+
+    Alert.alert(
+      "Chú ý!!",
+      "Việc download có thể mất trong vài phút, video sẽ được tải ẩn trên nền, trong quá trình tải vui lòng không thoát app, nhấn Ok để tiếp tục tải xuống!",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        {
+          text: "OK",
+          onPress: async () => await downloadURLsToFile(urls, path,
+            (progress) => console.log(progress))
+        }
+      ]
+    );
+  }
+
+
 
 
 
@@ -274,7 +383,8 @@ const TVDetail = ({ route }) => {
           title='Tải xuống'
           icon={() => <MaterialCommunityIcons name='arrow-collapse-down' size={16} color='white' />}
           titleStyle={{ color: 'white', fontSize: 12, fontWeight: '600', marginLeft: 5 }}
-          buttonStyle={{ backgroundColor: 'gray' }} />
+          buttonStyle={{ backgroundColor: 'gray' }} 
+          onPress = {() => downloadedFile()}/>
         <View style={{
           flexDirection: 'row',
           alignItems: 'center',

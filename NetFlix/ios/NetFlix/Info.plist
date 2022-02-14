@@ -35,7 +35,15 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string></string>
+	<key>NSDownloadsFolderUsageDescription</key>
+	<string></string>
 	<key>NSLocationWhenInUseUsageDescription</key>
+	<string></string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string></string>
+	<key>NSPhotoLibraryUsageDescription</key>
 	<string></string>
 	<key>UIAppFonts</key>
 	<array>

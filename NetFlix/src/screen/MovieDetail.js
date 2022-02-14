@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, Share } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, Share, PermissionsAndroid, Alert, Linking } from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { Image, Rating, RatingProps, Button } from 'react-native-elements'
@@ -12,6 +12,10 @@ import { useSelector } from 'react-redux';
 import { showAlert } from '../components/Alert';
 import { TYPE } from '../components/Alert/constants';
 import { ScrollView, FlatList } from 'react-native-gesture-handler';
+import ytdl from "react-native-ytdl"
+import RNFetchBlob from 'rn-fetch-blob';
+import FileViewer from "react-native-file-viewer";
+
 
 const queryParams = {
   api_key: BASE.API_KEY,
@@ -62,7 +66,7 @@ const MovieDetail = ({ route }) => {
     if (dataMovie?.state?.rated) {
       setRating(dataMovie?.state?.rated?.value)
     }
-    if(dataMovie?.state?.favorite){
+    if (dataMovie?.state?.favorite) {
       setFavorited(true)
     }
   }, [dataMovie?.state])
@@ -107,14 +111,14 @@ const MovieDetail = ({ route }) => {
       body: {
         media_type: 'movie',
         media_id: movieId,
-        favorite : !favorited
+        favorite: !favorited
       }
     }
-    const {error, data} = await markAsFavorite(accoutInfo.id,params)
+    const { error, data } = await markAsFavorite(accoutInfo.id, params)
     if (data) {
-      if(!favorited){
+      if (!favorited) {
         showAlert(TYPE.success, 'Success', 'Add list favorite success!')
-      }else {
+      } else {
         showAlert(TYPE.success, 'Success', 'Removed movie from list favorite success!')
       }
       setFavorited(!favorited)
@@ -130,7 +134,7 @@ const MovieDetail = ({ route }) => {
       const result = await Share.share({
         message:
           `Chia sẻ bộ phim yêu thích ${dataMovie.title} đến mọi người!!!, link : https://www.youtube.com/watch?v=${dataMovie.keyYoutube}`,
-        title:'Share the movie'
+        title: 'Share the movie'
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
@@ -145,9 +149,113 @@ const MovieDetail = ({ route }) => {
         // dismissed
       }
     } catch (error) {
-     showAlert(TYPE.error,'ERROR',error.message)
+      showAlert(TYPE.error, 'ERROR', error.message)
     }
   };
+
+  const downloadURLsToFile = (URLs, path, progressCallback) => {
+    return new Promise(async (resolve, reject) => {
+
+      for (let i = 0; i < URLs.length; i++) {
+        let { url, headers } = URLs[i];
+
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+            {
+              title: 'Storage Permission',
+              message: 'App needs access to external storage to download the file',
+            }
+          );
+
+          if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+            Alert.alert(
+              'Permission Denied!',
+              'You need to give storage permission to download the file'
+            );
+            return;
+          }
+
+          //Alert.alert('Permission granted', 'Permission has been granted!');
+
+          const fileAlreadyExists = await RNFetchBlob.fs.exists(path);
+          if (fileAlreadyExists) {
+            await RNFetchBlob.fs.unlink(path);
+          }
+
+          const res = await RNFetchBlob.config({
+            path,
+            overwrite: false,
+          //   addAndroidDownloads : {
+          //     useDownloadManager : true, // <-- this is the only thing required
+          //     // Optional, override notification setting (default to true)
+          //     notification : false,
+          //     title : dataMovie.original_title,
+          //     // Optional, but recommended since android DownloadManager will fail when
+          //     // the url does not contains a file extension, by default the mime type will be text/plain
+          //     mime : 'video',
+          //     //description : 'File downloaded by download manager.'
+          // }
+          }).fetch('GET', url, headers)
+            .progress((received, total) => {
+              if (progressCallback) {
+                progressCallback((received * (i + 1)) / (total * URLs.length));
+              }
+            })
+            .catch(err => console.error(`Could not save:"${path}" Reason:`, err));
+
+          const contentType = res.respInfo.headers['Content-Type'];
+          if (contentType) {
+            const extension = contentType.split('/')[1];
+            path = `${path}.${extension}`;
+            await RNFetchBlob.fs.mv(res.path(), path);
+          }
+          console.log('The file is saved to:', path);
+          showAlert(TYPE.success,'Success', 'Tải xuống hoàn tất!')
+
+          await FileViewer.open(path, { showOpenWithDialog: true }) // absolute-path-to-my-local-file.
+                .then(() => {
+                  // success
+                  console.log('success')
+                })
+                .catch((error) => {
+                  // error
+                })
+
+        } catch (e) {
+          console.error(e);
+          reject(e);
+        }
+
+      }
+      resolve(path);
+
+    });
+  }
+
+  const downloadedFile = async () => {
+    const youtubeURL = `http://www.youtube.com/watch?v=${dataMovie.keyYoutube}`;
+    const urls = await ytdl(youtubeURL, { filter: format => format.container === 'mp4' });
+    const path = RNFetchBlob.fs.dirs.DownloadDir + `/${dataMovie.original_title}`;
+    console.log("🚀 ~ file: MovieDetail.js ~ line 218 ~ downloadedFile ~ path", path)
+
+    Alert.alert(
+      "Chú ý!!",
+      "Việc download có thể mất trong vài phút, video sẽ được tải ẩn trên nền, trong quá trình tải vui lòng không thoát app, nhấn Ok để tiếp tục tải xuống!",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        {
+          text: "OK",
+          onPress: async () => await downloadURLsToFile(urls, path,
+            (progress) => console.log(progress))
+        }
+      ]
+    );
+  }
 
 
 
@@ -270,7 +378,8 @@ const MovieDetail = ({ route }) => {
           title='Tải xuống'
           icon={() => <MaterialCommunityIcons name='arrow-collapse-down' size={16} color='white' />}
           titleStyle={{ color: 'white', fontSize: 12, fontWeight: '600', marginLeft: 5 }}
-          buttonStyle={{ backgroundColor: 'gray' }} />
+          buttonStyle={{ backgroundColor: 'gray' }}
+          onPress={() => downloadedFile()} />
         <View style={{
           flexDirection: 'row',
           alignItems: 'center',
@@ -278,7 +387,7 @@ const MovieDetail = ({ route }) => {
           width: '100%'
         }}>
           <TouchableOpacity style={styles.btn}
-          onPress={handleFavorite}>
+            onPress={handleFavorite}>
             <AntDesign name={favorited ? 'check' : 'plus'} size={18} color='white' />
             <Text style={{ color: 'gray', fontSize: 13 }}>Danh sách</Text>
           </TouchableOpacity>
@@ -288,7 +397,7 @@ const MovieDetail = ({ route }) => {
             <Text style={{ color: 'gray', fontSize: 13 }}>Đánh giá</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.btn}
-          onPress={() => onShare()}>
+            onPress={() => onShare()}>
             <MaterialCommunityIcons name='share' size={18} color='white' />
             <Text style={{ color: 'gray', fontSize: 13 }}>Chia sẻ</Text>
           </TouchableOpacity>
