@@ -15,3 +15,8 @@ This application clone Netflix depend on [The Movie DB](https://developers.themo
 5. search movie or tv show
 
 ## Demo
+![Home Screen](assets/HomeScreen.png)
+![Detail Screen](assets/DetailScreen.png)
+![New And Hot Screen](assets/NewAndHotScreen.png)
+![Search Screen](assets/SearchScreen.png)
+![Profile Screen](assets/ProfileScreen.png)
