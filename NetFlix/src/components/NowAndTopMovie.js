@@ -32,10 +32,10 @@ const NowAndTopMovie = ({ list, find_dimesions }) => {
                                 alignItems: 'center',
                                 justifyContent: 'flex-end',
                             }}>
-                                <TouchableOpacity style={styles.btn}>
+                                {/* <TouchableOpacity style={styles.btn}>
                                     <AntDesign name='plus' size={26} color='white' />
                                     <Text style={{ color: '#c9c9c9', fontSize: 12 }}>Danh sách</Text>
-                                </TouchableOpacity>
+                                </TouchableOpacity> */}
                                 <TouchableOpacity style={styles.btn}
                                     onPress={() => navigate('MovieDetail', item)}
                                 >

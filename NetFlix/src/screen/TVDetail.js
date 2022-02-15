@@ -136,7 +136,7 @@ const TVDetail = ({ route }) => {
     try {
       const result = await Share.share({
         message:
-          `Chia sẻ Tv show yêu thích ${dataTv.title} đến mọi người!!!, link : https://www.youtube.com/watch?v=${dataTv.keyYoutube}`,
+          `Chia sẻ Tv show yêu thích " ${dataTv.title ?? dataTv.name} " đến mọi người!!!, link : https://www.youtube.com/watch?v=${dataTv.keyYoutube}`,
         title:'Share the Tv show'
       });
       if (result.action === Share.sharedAction) {
@@ -240,7 +240,7 @@ const TVDetail = ({ route }) => {
   const downloadedFile = async () => {
     const youtubeURL = `http://www.youtube.com/watch?v=${dataTv.keyYoutube}`;
     const urls = await ytdl(youtubeURL, { filter: format => format.container === 'mp4' });
-    const path = RNFetchBlob.fs.dirs.DownloadDir + `/${dataTv.original_title}`;
+    const path = RNFetchBlob.fs.dirs.DownloadDir + `/${dataTv.original_title ?? dataTv.name}`;
     console.log("🚀 ~ file: MovieDetail.js ~ line 218 ~ downloadedFile ~ path", path)
 
     Alert.alert(
