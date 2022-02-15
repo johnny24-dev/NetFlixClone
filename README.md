@@ -13,6 +13,10 @@ This application clone Netflix depend on [The Movie DB](https://developers.themo
 3. rating the movie or tv show
 4. download the movie trailer or tv show trailer
 5. search movie or tv show
+6. share the movie or tv show
+
+## Note
+1. The application using ".env" file, so that must install react native config on android and ios
 
 ## Demo
 ![Home Screen](assets/HomeScreen.png)
