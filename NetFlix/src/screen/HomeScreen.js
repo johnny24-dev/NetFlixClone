@@ -7,12 +7,15 @@ import {
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import * as BASE from '../api/base'
 import PosterMovie from '../components/PosterMovie';
-import { getListPopilarMovie, 
-  getListMovieTrending, 
-  getListTVPopular, 
-  getListTVTrending, 
-  getListDiscoverMovie, 
-  getLatestMovie, } from '../api/Request'
+import {
+  getListPopilarMovie,
+  getListMovieTrending,
+  getListTVPopular,
+  getListTVTrending,
+  getListDiscoverMovie,
+  markAsFavorite,
+  getMovieState
+} from '../api/Request'
 import { useDispatch, useSelector } from 'react-redux';
 import { ACTIONS } from '../redux/action/moviesAction';
 import { ActionsAccount } from '../redux/action/accountAction'
@@ -20,7 +23,8 @@ import { Image } from 'react-native-elements'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { navigate } from '../navbar/rootNavigation';
 import CategoryModal from '../components/CategoryModal';
-import {FlatList} from 'react-native-gesture-handler'
+import { FlatList } from 'react-native-gesture-handler'
+import { showAlert, TYPE } from '../components/Alert'
 
 const params = {
   api_key: BASE.API_KEY,
@@ -42,12 +46,13 @@ const gotoDetail = (item) => {
 const HomeScreen = () => {
 
   const [dataHome, setDataHome] = useState([])
-  const [dataPoster, setDataPoster] = useState({})
   const [showMenu, setShowMenu] = useState(true)
   const [showCategory, setShowCategory] = useState(false)
   const offsetScroll = useRef(0)
   const dispatch = useDispatch()
   const sessionId = useSelector(state => state.authenReducer.sessionId)
+  const [markedFavorite, setMarkedFavorite] = useState(false)
+  const accoutInfo = useSelector(state => state.accountReducer.info)
 
   useEffect(() => {
     dispatch(ACTIONS.getListMoviesCategory())
@@ -55,7 +60,6 @@ const HomeScreen = () => {
 
     const fetchData = async (params) => {
       const response = await Promise.all([
-        getLatestMovie(params),
         getListPopilarMovie(params),
         getListMovieTrending(params),
         getListTVPopular(params),
@@ -67,58 +71,67 @@ const HomeScreen = () => {
       ])
       const dataOut = []
       response.forEach((value, index) => {
-        if (index != 0) {
-          let titleData = "";
-          let subject = ""
-          switch (index) {
-            case 1:
-              titleData = "Phim thịnh hành";
-              subject = "movie"
-              break;
-            case 2:
-              titleData = "Movies Trending";
-              subject = "movie"
-              break;
-            case 3:
-              titleData = "TV thịnh hành"
-              subject = "tv"
-              break
-            case 4:
-              titleData = "TV Trending"
-              subject = "tv"
-              break
-            case 5:
-              titleData = "Phim hoạt hình"
-              subject = "movie"
-              break
-            case 6:
-              titleData = "Phim hài"
-              subject = "movie"
-              break
-            case 7:
-              titleData = "Phim kinh dị"
-              subject = "movie"
-              break
-            case 8:
-              titleData = "Phim lãng mạn"
-              subject = "movie"
-              break
-          }
-          value.data.results = value.data.results.map((item) => ({ ...item, subject }))
-          const data = {
-            title: titleData,
-            data: value.data.results
-          };
-          dataOut.push(data);
-        } else {
-          setDataPoster({ ...value, subject: 'movie' })
+        let titleData = "";
+        let subject = ""
+        switch (index) {
+          case 0:
+            titleData = "Phim thịnh hành";
+            subject = "movie"
+            break;
+          case 1:
+            titleData = "Movies Trending";
+            subject = "movie"
+            break;
+          case 2:
+            titleData = "TV thịnh hành"
+            subject = "tv"
+            break
+          case 3:
+            titleData = "TV Trending"
+            subject = "tv"
+            break
+          case 4:
+            titleData = "Phim hoạt hình"
+            subject = "movie"
+            break
+          case 5:
+            titleData = "Phim hài"
+            subject = "movie"
+            break
+          case 6:
+            titleData = "Phim kinh dị"
+            subject = "movie"
+            break
+          case 7:
+            titleData = "Phim lãng mạn"
+            subject = "movie"
+            break
         }
+        value.data.results = value.data.results.map((item) => ({ ...item, subject }))
+        const data = {
+          title: titleData,
+          data: value.data.results
+        };
+        dataOut.push(data);
+
       })
       setDataHome(dataOut)
 
     }
     fetchData(params)
   }, [])
+
+
+  useEffect(() => {
+    const fetchMovieState =  async () => {
+        const {error, data} = await getMovieState(dataHome[1]?.data[0]?.id, { api_key: BASE.API_KEY, session_id: sessionId })
+        setMarkedFavorite(data.favorite)
+    }
+
+    fetchMovieState()
+
+}, [dataHome])
+
 
   const handleScroll = useCallback((event) => {
     const offset = event.nativeEvent.contentOffset.y;
@@ -133,6 +146,33 @@ const HomeScreen = () => {
   const handelClose = () => {
     setShowCategory(!showCategory)
   }
+
+  const handleFavorite = async () => {
+    const params = {
+        query: {
+            api_key: BASE.API_KEY,
+            session_id: sessionId
+        },
+        body: {
+            media_type: 'movie',
+            media_id: dataHome[1]?.data[0]?.id,
+            favorite: !markedFavorite
+        }
+    }
+    const { error, data } = await markAsFavorite(accoutInfo.id, params)
+    if (data) {
+        if (!markedFavorite) {
+            showAlert(TYPE.success, 'Success', 'Add list favorite success!')
+        } else {
+            showAlert(TYPE.success, 'Success', 'Removed movie from list favorite success!')
+        }
+        setMarkedFavorite(!markedFavorite)
+    } else {
+        console.log('error rate:>>', error)
+        showAlert(TYPE.error, 'Error', 'Add fail!')
+    }
+}
+
 
 
   return (
@@ -177,7 +217,12 @@ const HomeScreen = () => {
             </View>
           )
         }}
-        ListHeaderComponent={<PosterMovie item={dataPoster.data} dandleInfo={() => gotoDetail(dataPoster.data)} />}
+       ListHeaderComponent={<PosterMovie 
+        item={dataHome[1]?.data[0]} 
+        handleInfo={() => gotoDetail(dataHome[1]?.data[0])} 
+        favorited={markedFavorite}
+        handleFavorite={handleFavorite}/>}
+       extraData={markedFavorite}
       />
       {showMenu &&
         <SafeAreaView style={styles.menu}>
@@ -200,7 +245,7 @@ const HomeScreen = () => {
                 <MaterialIcons name='cast' size={34} color='white' />
               </TouchableOpacity>
               <TouchableOpacity
-              onPress={()=>navigate('Profile')}>
+                onPress={() => navigate('Profile')}>
                 <Image
                   source={require('../assets/profile.jpg')}
                   style={{ width: 29, height: 29, borderRadius: 8 }} />

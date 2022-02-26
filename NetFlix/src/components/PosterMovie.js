@@ -1,14 +1,27 @@
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator,Dimensions } from 'react-native';
-import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Dimensions } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { Image, } from 'react-native-elements/dist/image/Image';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { Button } from 'react-native-elements/dist/buttons/Button';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import * as BASE from '../api/base'
 import LinearGradient from 'react-native-linear-gradient';
+import { useSelector } from 'react-redux';
+
 const { width } = Dimensions.get('window');
 
-const PosterMovie = ({ item, dandleInfo }) => {
+const PosterMovie = ({ item = {}, handleInfo, favorited, handleFavorite }) => {
+
+    const movieCategory = useSelector(state => state.moviesReducer.category)
+    item.category = item?.genre_ids?.map((item) => {
+        movieCategory.map((x) => {
+          if (item == x.id) {
+            item = x
+          }
+        })
+        return item
+      })
+
     return (
         <View style={styles.container}>
             <Image
@@ -29,14 +42,14 @@ const PosterMovie = ({ item, dandleInfo }) => {
                     colors={[
                         'black',
                         'transparent',
-                        
+
                     ]}
                     style={styles.linearGradientTop}
                 />
             </Image>
-            <View style={{ padding: 10, justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-                {item?.genres && item.genres.map((x, i) => {
-                    if (i !== item.genres.length - 1) {
+            <View style={{ padding: 10, justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', }}>
+                {item?.category && item?.category.map((x, i) => {
+                    if (i !== item?.category.length - 1) {
                         return (
                             <Text style={styles.genrers} key={i.toString()}>{x.name} * </Text>
                         )
@@ -52,16 +65,18 @@ const PosterMovie = ({ item, dandleInfo }) => {
                     justifyContent: 'space-around',
                     width: '100%'
                 }}>
-                    <TouchableOpacity style={styles.btn}>
-                        <AntDesign name='plus' size={26} color='white' />
+                    <TouchableOpacity style={styles.btn}
+                        onPress={handleFavorite}>
+                        <AntDesign name={favorited ? 'check' : 'plus'} size={26} color='white' />
                         <Text style={{ color: 'white', fontWeight: 'bold' }}>Danh sách</Text>
                     </TouchableOpacity>
                     <Button icon={<Ionicons name='play' size={24} color='black' />}
                         containerStyle={{ backgroundColor: 'white', paddingHorizontal: 10 }}
                         title='Phát'
-                        titleStyle={{ color: 'black' }} />
+                        titleStyle={{ color: 'black' }}
+                        onPress={handleInfo} />
                     <TouchableOpacity style={styles.btn}
-                    onPress={dandleInfo}>
+                        onPress={handleInfo}>
                         <Ionicons name='ios-information-circle-outline' size={26} color='white' />
                         <Text style={{ color: 'white', fontWeight: 'bold' }}>Thông tin</Text>
                     </TouchableOpacity>
@@ -74,9 +89,6 @@ const PosterMovie = ({ item, dandleInfo }) => {
 export default PosterMovie;
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1
-    },
     image: {
         height: 500,
     },
@@ -85,7 +97,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 14,
         fontWeight: '800',
-        width:'100%'
+        width: '100%'
     },
     btn: {
         justifyContent: 'center',
@@ -96,13 +108,13 @@ const styles = StyleSheet.create({
     linearGradient: {
         width,
         height: 200,
-        position:'absolute',
-        top:300
-      },
-    linearGradientTop:{
+        position: 'absolute',
+        top: 300
+    },
+    linearGradientTop: {
         width,
         height: 250,
-        position:'absolute',
-        top:0
+        position: 'absolute',
+        top: 0
     }
 })
