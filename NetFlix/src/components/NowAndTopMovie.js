@@ -36,12 +36,12 @@ const NowAndTopMovie = ({ list, find_dimesions }) => {
                                     <AntDesign name='plus' size={26} color='white' />
                                     <Text style={{ color: '#c9c9c9', fontSize: 12 }}>Danh sách</Text>
                                 </TouchableOpacity> */}
-                                <TouchableOpacity style={styles.btn}
+                                {/* <TouchableOpacity style={styles.btn}
                                     onPress={() => navigate('MovieDetail', item)}
                                 >
                                     <Ionicons name='ios-information-circle-outline' size={26} color='white' />
                                     <Text style={{ color: '#c9c9c9', fontSize: 12 }}>Thông tin</Text>
-                                </TouchableOpacity>
+                                </TouchableOpacity> */}
                             </View>
                             <Text style={{
                                 color: 'white',
