@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, Share, Alert, PermissionsAndroid } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, Share, Alert, PermissionsAndroid, Platform } from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { Image, Button, Rating } from 'react-native-elements'
@@ -172,7 +172,7 @@ const TVDetail = ({ route }) => {
             }
           );
 
-          if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+          if (granted !== PermissionsAndroid.RESULTS.GRANTED && Platform.OS == 'android') {
             Alert.alert(
               'Permission Denied!',
               'You need to give storage permission to download the file'

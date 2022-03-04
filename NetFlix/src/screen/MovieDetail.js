@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, Share, PermissionsAndroid, Alert, Linking } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, Share, PermissionsAndroid, Alert, Linking , Platform} from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { Image, Rating, RatingProps, Button } from 'react-native-elements'
@@ -168,7 +168,7 @@ const MovieDetail = ({ route }) => {
             }
           );
 
-          if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+          if (granted !== PermissionsAndroid.RESULTS.GRANTED && Platform.OS == 'android' ) {
             Alert.alert(
               'Permission Denied!',
               'You need to give storage permission to download the file'

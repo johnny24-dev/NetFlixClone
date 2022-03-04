@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     genrers: {
         color: 'white',
         textAlign: 'center',
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: '800',
         width: '100%'
     },
